@@ -1,5 +1,5 @@
 # NCoin-DP
-## Tutorial
+## 1. Tutorial
 We first provide a tutorial for NCoin-DP. It contains
 
 - How to generate synthetic data (Section 3.1)
@@ -10,7 +10,7 @@ We first provide a tutorial for NCoin-DP. It contains
 using OU process. For detailed, go to `NCoin-DP_tutorial.ipynb` above.
 
 
-## Simulation
+## 2. Simulation
 We provide codes for simulation and numerical results for NCoin-DP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
 - the OU process $dX_t = \kappa(\beta - X_t) dt + \sigma dB_t$
 with an initial value $X_0 \sim N(\beta, \frac{\sigma^2}{2\kappa} )$ where $\kappa>0, \beta>0, \sigma>0$, 
@@ -45,7 +45,7 @@ go to  `Jacobi` and run
 #### For the multivariate process
 
 
-## Real Data Analysis
+## 3. Real Data Analysis
 We collect adjusted closing price of MSFT $A_t$ and ADBE $C_t$ on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model the log-prices $S_t\equiv\log A_t$ and its log-difference $Y_t\equiv \log C_t - \log A_t$ as
 
 $$dS_t = (\mu - \frac{1}{2}\sigma^2 )dt + \sigma dB^1_t  $$
