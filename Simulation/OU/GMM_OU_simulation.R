@@ -1,6 +1,6 @@
-###############################################
-#### Jacobi diffusion simulation with GMM  ####
-###############################################
+#################################
+#### OU simulation with GMM  ####
+#################################
 
 # Source ------------------------------------------------------------------
 source("./Simulation/DESP_functions.R")
@@ -10,7 +10,7 @@ param_mat = rbind(c(3,2,1), c(4,1.5,1.5), c(2,1.1,1.9))
 
 for (scenario in c(1,2,3)){
   for (n in n_col){
-    sim_name = paste0("./simdata/sim_data_", n, "_", scenario,".csv")
+    sim_name = paste0("./Simulation/OU/simdata/sim_data_", n, "_", scenario,".csv")
     sim_data = read.csv(sim_name)[2:(n+2)]
     colnames(sim_data)<-NULL
     sim_data = as.matrix(sim_data)
