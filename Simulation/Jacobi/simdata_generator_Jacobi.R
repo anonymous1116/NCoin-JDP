@@ -1,7 +1,7 @@
 # Simulation Data Generation
 
 # Source ------------------------------------------------------------------
-source("./DESP_functions.R")
+source("./Simulation/DESP_functions.R")
 
 sim_num = 500
 
@@ -27,7 +27,7 @@ for (n in sim_n){
                      Jacobi_nonstnry_gnrtr(delta_col[1], n0 = n, m0=20, param[1], param[2],param[3], 0.1)
     )
   }
-  sim_name = paste0("./simdata/sim_data_Jacobi_", n, "_1.csv")
+  sim_name = paste0("./Simulation/Jacobi/simdata/sim_data_Jacobi_", n, "_1.csv")
   write.csv(sim_data, file = sim_name)
   
   sim_data <- c()
@@ -36,7 +36,7 @@ for (n in sim_n){
                      Jacobi_nonstnry_gnrtr(delta_col[1], n0 = n, m0=20, param2[1], param2[2], param2[3],0.1)
     )
   }
-  sim_name = paste0("./simdata/sim_data_Jacobi_", n, "_2.csv")
+  sim_name = paste0("./Simulation/Jacobi/simdata/sim_data_Jacobi_", n, "_2.csv")
   write.csv(sim_data, file = sim_name)
   
   sim_data <- c()
@@ -45,6 +45,6 @@ for (n in sim_n){
                      Jacobi_nonstnry_gnrtr(delta_col[1], n0 = n,  m0=20,param3[1], param3[2], param3[3],0.1)
     )
   }
-  sim_name = paste0("./simdata/sim_data_Jacobi_", n, "_3.csv")
+  sim_name = paste0("./Simulation/Jacobi/simdata/sim_data_Jacobi_", n, "_3.csv")
   write.csv(sim_data, file = sim_name)
 }

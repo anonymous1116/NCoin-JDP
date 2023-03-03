@@ -1,7 +1,7 @@
 # Simulation Data Generation
 
 # Source ------------------------------------------------------------------
-source("./DESP_functions.R")
+source("./Simulation/DESP_functions.R")
 
 sim_num = 500
 
@@ -27,7 +27,7 @@ for (n in sim_n){
                      OU_stnry_gnrtr(delta_col[1], n0 = n, mu = param[1], theta = param[2], sigma = param[3])
     )
   }
-  sim_name = paste0("./simdata/sim_data_", n, "_1.csv")
+  sim_name = paste0("./Simulation/OU/simdata/sim_data_", n, "_1.csv")
   write.csv(sim_data, file = sim_name)
   
   sim_data <- c()
@@ -36,7 +36,7 @@ for (n in sim_n){
                      OU_stnry_gnrtr(delta_col[1], n0 = n, mu = param2[1], theta = param2[2], sigma = param2[3])
     )
   }
-  sim_name = paste0("./simdata/sim_data_", n, "_2.csv")
+  sim_name = paste0("./Simulation/OU/simdata/sim_data_", n, "_2.csv")
   write.csv(sim_data, file = sim_name)
   
   sim_data <- c()
@@ -45,6 +45,6 @@ for (n in sim_n){
                      OU_stnry_gnrtr(delta_col[1], n0 = n, mu = param3[1], theta = param3[2], sigma = param3[3])
     )
   }
-  sim_name = paste0("./simdata/sim_data_", n, "_3.csv")
+  sim_name = paste0("./Simulation/OU/simdata/sim_data_", n, "_3.csv")
   write.csv(sim_data, file = sim_name)
 }
