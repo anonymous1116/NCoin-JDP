@@ -1,6 +1,14 @@
 # NCoin-DP
 ## Tutorial
-We first provide a tutorial for NCoin-DP. Refer to `NCoin-DP_tutorial.ipynb` above.
+We first provide a tutorial for NCoin-DP. It contains
+
+- How to generate synthetic data (Section 3.1)
+- Functions of input statistic (3.2)
+- Learning the mapping using DNN (3.3)
+- Learning checking procedure (3.4)
+
+using OU process. For detailed, go to `NCoin-DP_tutorial.ipynb` above.
+
 
 ## Simulation
 We provide codes for simulation and numerical results for NCoin-DP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
