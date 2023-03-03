@@ -15,7 +15,7 @@ with an initial value $X_0 \sim N(\beta, \frac{\sigma^2}{2\kappa} )$ where $\kap
 
 Each folder is created for every process. Since we use both the `R` and `Python`, `R` for GMM and Pseudo-MLE, and `Python` for NCoin-DP, AOLS, and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. In order to reproduce the numerical results, generating simulation data may need to be preceded before actually implementing each estimator.
 
-### To implement, go to the folder `Simulation` above.
+### To obtain the simulation results in Section 6, go to the folder `Simulation` above.
 #### For OU process
 go to `OU` and run
 - NCoin-DP: `OU_n=200.ipynb`, `OU_n=500.ipynb`, `OU_n=2000.ipynb`
