@@ -15,21 +15,26 @@ with an initial value $X_0 \sim N(\beta, \frac{\sigma^2}{2\kappa} )$ where $\kap
 
 Each folder is created for every process. Since we use both the `R` and `Python`, `R` for GMM and Pseudo-MLE, and `Python` for NCoin-DP, AOLS, and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. In order to reproduce the numerical results, generating simulation data may need to be preceded before actually implementing each estimator.
 
-### To implement, go the folder `Simulation` above.
+### To implement, go to the folder `Simulation` above.
 #### For OU process
-go `OU` and run
-- MLE, NCoin-DP: `OU_n=200.ipynb`, `OU_n=500.ipynb`, `OU_n=2000.ipynb`
+go to `OU` and run
+- NCoin-DP: `OU_n=200.ipynb`, `OU_n=500.ipynb`, `OU_n=2000.ipynb`
+- MLE: `MLE_OU_simulation.R`
 - GMM : `GMM_OU_simulation.R`
 
 #### For CIR model
-go `CIR` and run
+go to  `CIR` and run
 - NCoin-DP A: `CIR-A_n=200.ipynb`, `CIR-A_n=500.ipynb`, `CIR-A_n=2000.ipynb`
 - NCoin-DP B: `CIR-B_n=200.ipynb`, `CIR-B_n=500.ipynb`, `CIR-B_n=2000.ipynb`
 - GMM : `GMM_CIR_simulation.R`
 - Pseudo-MLE : `PseudoMLE_CIR_simulation.R`
 
 #### For Jacobi diffusion model
-go `Jacobi` and run
+go to  `Jacobi` and run
+- NCoin-DP: `Jacobi_n=200.ipynb`, `Jacobi_n=500.ipynb`, `Jacobi_n=2000.ipynb`
+- GMM : `GMM_Jacobi_simulation.R`
+
+#### For the multivariate process
 
 
 
