@@ -36,7 +36,7 @@ for (scenario in c(1,2,3)){
       b_sim[sim] = results$b
       sigma_sim[sim] = results$sigma
     }
-    cat("n=", n, ", param=", param,"\n",
+    cat("Scenario", scenario, "n=", n, ", param=", param,"\n",
         c("a:    ", round(mean(a_sim), 4),    "bias :", round(mean(a_sim-param[1]), 4), 
           "r.bias :", round(mean(a_sim-param[1])/param[1],4), 
           "sd:", round(sd(a_sim),4),"\n",

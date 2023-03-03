@@ -42,7 +42,7 @@ for (scenario in c(1,2,3)){
         cat("GMM1 sim num: ", sim, "\n")
       }
     }
-    cat("n=", n, ", delta=", delta,"\n",
+    cat("Scenario", scenario, "n=", n, ", delta=", delta,"\n",
         c("a:    ", round(mean(a_sim), 4),    "bias :", round(mean(a_sim-param[1]), 4), 
           "r.bias :", round(mean(a_sim-param[1])/param[1],4), 
           "sd:", round(sd(a_sim),4),"\n",
