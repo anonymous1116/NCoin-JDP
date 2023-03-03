@@ -1,4 +1,4 @@
-# NCoin-DP
+# Nerual Conformal Inference for Diffusion Processes (NCoin-DP)
 ## 1. Tutorial
 We first provide a tutorial for NCoin-DP. It contains
 
