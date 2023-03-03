@@ -12,3 +12,5 @@ with an initial value $X_0 \sim N(\beta, \frac{\sigma^2}{2\kappa} )$ where $\kap
 - the Jacobi diffusion model $dX_t = \kappa (\beta - X_t) dt + \sigma \sqrt{X_t(1-X_t)} dB_t$ where $X_0 = x_0$ and $\kappa>0, 0<\beta<1, \sigma>0$, and 
 
 - a 3-dimensional multivariate process $dX_t = -A(\theta)X_t + dW_t$ where $A(\theta)$ is a lower diagonal matrix.
+
+Each folder is created for every process. Since we use both the `R` and `Python`, 'R' for GMM and Pseudo-MLE, and 'Python' for NCoin-DP and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. For implementing 
