@@ -38,9 +38,13 @@ go to  `Jacobi` and run
 
 
 ## Real Data Analysis
-We collect adjusted closing price of MSFT $A_t$ and ADBE $C_t$ on $n=1259$ trading days between January 01, 2013 and December 31, 2017. We model the log-prices $S_t\equiv\log A_t$ and its log-difference $Y_t\equiv \log C_t - \log A_t$ as
+We collect adjusted closing price of MSFT $A_t$ and ADBE $C_t$ on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model the log-prices $S_t\equiv\log A_t$ and its log-difference $Y_t\equiv \log C_t - \log A_t$ as
 
 $$dS_t = (\mu - \frac{1}{2}\sigma^2 )dt + \sigma dB^1_t  $$
 $$dY_t = \kappa(\beta - Y_t )dt + \eta  dB^2_t      $$
-with $E[dB^1_t dB^2_t] = \rho dt$.
+with $E[dB^1_t dB^2_t] = \rho dt$. 
 
+For detailed analysis go to the folder, `RealDataAnalysis`.
+
+
+<img width="779" alt="Screenshot 2023-03-03 121408" src="https://user-images.githubusercontent.com/126707827/222784718-b72d35a1-33b0-44d3-bb47-769b1282e57f.png">
