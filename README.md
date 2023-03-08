@@ -12,14 +12,10 @@ using OU process. For detailed, go to `NCoin-DP_tutorial.ipynb` above.
 
 ## 2. Simulation
 We provide codes for simulation and numerical results for NCoin-DP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
-- the OU process $dX_t = \kappa(\beta - X_t) dt + \sigma dB_t$
-with an initial value $X_0 \sim N(\beta, \frac{\sigma^2}{2\kappa} )$ where $\kappa>0, \beta>0, \sigma>0$, 
-
-- the CIR model $dX_t = \kappa (\beta - X_t) dt + \sigma \sqrt{X_t} dB_t$ where $X_0 = x_0$ and $2\kappa \beta \geq \sigma^2$ and $\kappa>0, \beta>0, \sigma>0$, 
-
-- the Jacobi diffusion model $dX_t = \kappa (\beta - X_t) dt + \sigma \sqrt{X_t(1-X_t)} dB_t$ where $X_0 = x_0$ and $\kappa>0, 0<\beta<1, \sigma>0$, and 
-
-- a 3-dimensional multivariate process $dX_t = -A(\theta)X_t + dW_t$ where $A(\theta)$ is a lower diagonal matrix.
+- the OU process 
+- the CIR model 
+- the Jacobi diffusion model 
+- a 3-dimensional multivariate process 
 
 Each folder is created for every process. Since we use both the `R` and `Python`, `R` for GMM and Pseudo-MLE, and `Python` for NCoin-DP, AOLS, and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. In order to reproduce the numerical results, generating simulation data may need to be preceded before actually implementing each estimator.
 
@@ -48,13 +44,7 @@ go to `Multi` and run
 - AOLS : `Multi_n=1000.ipynb`, `Multi_n=2000.ipynb`, `Multi_n=3000.ipynb`
 
 ## 3. Real Data Analysis
-We collect adjusted closing price of MSFT $A_t$ and ADBE $C_t$ on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model the log-prices $S_t\equiv\log A_t$ and its log-difference $Y_t\equiv \log C_t - \log A_t$ as
-
-$$dS_t = (\mu - \frac{1}{2}\sigma^2 )dt + \sigma dB^1_t  $$
-$$dY_t = \kappa(\beta - Y_t )dt + \eta  dB^2_t      $$
-with $E[dB^1_t dB^2_t] = \rho dt$. 
-
-For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
+We collect adjusted closing price of MSFT and ADBE on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
 
 
 <img width="779" alt="Screenshot 2023-03-03 121408" src="https://user-images.githubusercontent.com/126707827/222784718-b72d35a1-33b0-44d3-bb47-769b1282e57f.png">
