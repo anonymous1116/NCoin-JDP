@@ -44,7 +44,7 @@ go to `Multi` and run
 - AOLS : `Multi_n=1000.ipynb`, `Multi_n=2000.ipynb`, `Multi_n=3000.ipynb`
 
 ## 3. Real Data Analysis
-We collect adjusted closing price of MSFT and ADBE on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
+We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
 
 
 <img width="779" alt="Screenshot 2023-03-03 121408" src="https://user-images.githubusercontent.com/126707827/222784718-b72d35a1-33b0-44d3-bb47-769b1282e57f.png">
