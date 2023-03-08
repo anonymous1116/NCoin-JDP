@@ -44,8 +44,8 @@ go to  `Jacobi` and run
 
 #### For the multivariate process
 go to `Multi` and run
-- NCoin-DP : 'Multi_n=1000.ipynb', 'Multi_n=2000.ipynb', 'Multi_n=3000.ipynb'
-- AOLS : 'Multi_n=1000.ipynb', 'Multi_n=2000.ipynb', 'Multi_n=3000.ipynb'
+- NCoin-DP : `Multi_n=1000.ipynb`, `Multi_n=2000.ipynb`, `Multi_n=3000.ipynb`
+- AOLS : `Multi_n=1000.ipynb`, `Multi_n=2000.ipynb`, `Multi_n=3000.ipynb`
 
 ## 3. Real Data Analysis
 We collect adjusted closing price of MSFT $A_t$ and ADBE $C_t$ on $n=1259$ trading days between January 01, 2013 and December 31, 2017. See the image below. We model the log-prices $S_t\equiv\log A_t$ and its log-difference $Y_t\equiv \log C_t - \log A_t$ as
