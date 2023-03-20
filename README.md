@@ -6,6 +6,7 @@ We first provide a tutorial for NCoin-DP. It contains
 - Functions of input statistic (Sec 3.2)
 - Learning the mapping using DNN (Sec 3.3)
 - Learning checking procedure (Sec 3.4)
+- Uncertainty characterization (Sec 4)
 
 using OU process. For detailed, go to `NCoin-DP_tutorial.ipynb` above.
 
