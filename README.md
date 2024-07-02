@@ -1,4 +1,4 @@
-# Nerual Conformal Inference for Diffusion Processes (NCoin-DP)
+# Nerual Conformal Inference for Jump Diffusion Processes (NCoin-JDP)
 ## 1. Tutorial
 We first provide a tutorial for NCoin-DP. It contains
 
