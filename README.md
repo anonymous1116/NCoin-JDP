@@ -17,7 +17,7 @@ In this section, we consider OU process to evaluate the performance of NCoin-DP.
 
 In order to reproduce the results in Section 5.1, first you should generate synthetic data and test data. Go to `simulaiton generator.ipynb` file and implement those. Make sure you generate folder `syn_data` and `test_data` for your appropriate directory, and change the code inside to direct the files to be saved in your assigned directory. Using the synthetic data, we implement the NCoin-JDP. The test data are evaluated by all of four methods.
 
-For NCoin-JDP, implement `OU_sim.ipynb`. For GMM and MCMC, we implemented and uploaded the results in this directory, so just download the results. For MCMC, `MCMC_OU.txt` is uploaded. For GMM, go to `GMM/GMM_OU.txt`. The `R` source code is available upon request.
+For NCoin-JDP, implement `OU_sim.ipynb`. Before implemting this file, make `nets` folder to save the learned mappings. For GMM and MCMC, we implemented and uploaded the results in this directory, so just download the results. For MCMC, `MCMC_OU.txt` is uploaded. For GMM, go to `GMM/GMM_OU.txt`. The `R` source code is available upon request.
 
 For two sensitivity analysis, implement `SensitivityAnalysis.ipynb`, and `SensitivityAnalysis2.ipynb`.
 
