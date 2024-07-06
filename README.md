@@ -12,11 +12,8 @@ using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 
 
 ## 2. Simulation
-We provide codes for simulation and numerical results for NCoin-JDP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
-- the OU process 
-- the CIR model 
-- the Jacobi diffusion model 
-- a 3-dimensional multivariate process 
+### Section 5.1
+We provide codes for simulation and numerical results for NCoin-JDP, MLE, GMM, and MCMC. In our simulation studies, we consider OU process to evaluate the performance of NCoin-DP. 
 
 Each folder is created for every process. Since we use both the `R` and `Python`, `R` for GMM and Pseudo-MLE, and `Python` for NCoin-DP, AOLS, and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. In order to reproduce the numerical results, generating simulation data may need to be preceded before actually implementing each estimator.
 
