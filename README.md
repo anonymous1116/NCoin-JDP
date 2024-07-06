@@ -1,5 +1,5 @@
 # Nerual Conformal Inference for Jump Diffusion Processes (NCoin-JDP)
-## 1. Tutorial
+## Tutorial
 We first provide a tutorial for NCoin-DP. It contains
 
 - How to generate synthetic data (Sec 2.1)
@@ -11,7 +11,7 @@ We first provide a tutorial for NCoin-DP. It contains
 using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 
 
-## 2. Simulation
+## Simulation (Section 5)
 ### Section 5.1
 In this section, we consider OU process to evaluate the performance of NCoin-DP. We provide codes for simulation and numerical results for NCoin-JDP, MLE, GMM, and MCMC. The NCoin-JDP, and MLE methods are implemented through `Python`, and the GMM and MCMC methods through `R`. `Jupyter Notebook`s are provided for `Python` code, and `R` scripts are also provided.
 
@@ -24,10 +24,10 @@ For two sensitivity analysis, implement `SensitivityAnalysis.ipynb`, and `Sensit
 Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.1.
 
 
-## Section 5.2
+### Section 5.2
+For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively.
 
-
-## 3. Real Data Analysis
+## Real Data Analysis (Section 6)
 We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
 
 
