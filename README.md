@@ -2,13 +2,13 @@
 ## 1. Tutorial
 We first provide a tutorial for NCoin-DP. It contains
 
-- How to generate synthetic data (Sec 3.1)
-- Functions of input statistic (Sec 3.2)
-- Learning the mapping using DNN (Sec 3.3)
-- Learning checking procedure (Sec 3.4)
-- Uncertainty characterization (Sec 4)
+- How to generate synthetic data (Sec 2.1)
+- Functions of input statistic (Sec 2.2)
+- Learning the mapping using DNN (Sec 2.3)
+- Learning checking procedure (Sec 2.4)
+- Uncertainty characterization (Sec 3)
 
-using OU process. For detailed, go to `NCoin-DP_tutorial.ipynb` above.
+using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 
 
 ## 2. Simulation
