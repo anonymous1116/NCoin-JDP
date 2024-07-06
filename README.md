@@ -12,7 +12,7 @@ using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 
 
 ## 2. Simulation
-We provide codes for simulation and numerical results for NCoin-DP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
+We provide codes for simulation and numerical results for NCoin-JDP, MLE, Pseudo-MLE, AOLS, and GMM. In our simulation studies, we consider four types of diffusion to evaluate the performance of NCoin-DP. These are  
 - the OU process 
 - the CIR model 
 - the Jacobi diffusion model 
