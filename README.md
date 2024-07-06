@@ -15,9 +15,14 @@ using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 ### Section 5.1
 In this section, we consider OU process to evaluate the performance of NCoin-DP. We provide codes for simulation and numerical results for NCoin-JDP, MLE, GMM, and MCMC. The NCoin-JDP, and MLE methods are implemented through `Python`, and the GMM and MCMC methods through `R`. `Jupyter Notebook`s are provided for `Python` code, and `R` scripts are also provided.
 
-In order to reproduce the results in Section 5.1, first you should generate synthetic data and test data. Go to `simulaiton generator.ipynb` file and implement those. Using the synthetic data, we implement the NCoin-JDP. The test data are evaluated by all of four methods.
+In order to reproduce the results in Section 5.1, first you should generate synthetic data and test data. Go to `simulaiton generator.ipynb` file and implement those. Make sure you generate folder `syn_data` and `test_data` for your appropriate directory, and change the code inside to direct the files to be saved in your assigned directory. Using the synthetic data, we implement the NCoin-JDP. The test data are evaluated by all of four methods.
 
-For NCoin-JDP, implement `OU_sim.ipynb'. For GMM and MCMC, we implemented and uploaded the results in this directory, so just download the results. The source code is available upon request.
+For NCoin-JDP, implement `OU_sim.ipynb`. For GMM and MCMC, we implemented and uploaded the results in this directory, so just download the results. For MCMC, `MCMC_OU.txt` is uploaded. For GMM, go to `GMM/GMM_OU.txt`. The `R` source code is available upon request.
+
+For two sensitivity analysis, implement `SensitivityAnalysis.ipynb`, and `SensitivityAnalysis2.ipynb`.
+
+Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.1.
+
 
 ## Section 5.2
 
