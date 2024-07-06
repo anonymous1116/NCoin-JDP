@@ -13,9 +13,11 @@ using OU process. For detailed, go to `OU_tutorial.ipynb` above.
 
 ## 2. Simulation
 ### Section 5.1
-We provide codes for simulation and numerical results for NCoin-JDP, MLE, GMM, and MCMC. In our simulation studies, we consider OU process to evaluate the performance of NCoin-DP. 
+In this section, we consider OU process to evaluate the performance of NCoin-DP. We provide codes for simulation and numerical results for NCoin-JDP, MLE, GMM, and MCMC. The NCoin-JDP, and MLE methods are implemented through `Python`, and the GMM and MCMC methods through `R`. `Jupyter Notebook`s are provided for `Python` code, and `R` scripts are also provided.
 
-Each folder is created for every process. Since we use both the `R` and `Python`, `R` for GMM and Pseudo-MLE, and `Python` for NCoin-DP, AOLS, and MLE, we create the 500 simulation data from `R` for each process, and save it as excel file. In order to reproduce the numerical results, generating simulation data may need to be preceded before actually implementing each estimator.
+In order to reproduce the results in Section 5.1, first you should generate synthetic data and test data. Go to `simulaiton generator.ipynb` file and implement those. Using the synthetic data, we implement the NCoin-JDP. The test data are evaluated by all of four methods.
+
+For NCoin-JDP, implement `OU_sim.ipynb'
 
 ### To obtain the simulation results in Section 6, go to the folder `Simulation` above.
 #### For OU process
