@@ -21,11 +21,13 @@ For NCoin-JDP, implement `OU_sim.ipynb`. For GMM and MCMC, we implemented and up
 
 For two sensitivity analysis, implement `SensitivityAnalysis.ipynb`, and `SensitivityAnalysis2.ipynb`.
 
-Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.1.
+Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.1. 
 
 
 ### Section 5.2
-For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively.
+For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively. Algorithm 1 is then implemented 20 times using `inference_learning.ipynb` and `inference_learning_1.ipynb` for P1 and P2, respectively.
+
+Finally, we implement 
 
 ## Real Data Analysis (Section 6)
 We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
