@@ -25,7 +25,10 @@ Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.
 
 
 ### Section 5.2
-For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively. Algorithm 1 is then implemented 20 times using `inference_learning.ipynb` and `inference_learning_1.ipynb` for P1 and P2, respectively. Make sure to make folder `infer_nets/net0` and `infer_nets/net1` to save the learned mappings for each.
+For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively. 
+
+Algorithm 1 is then implemented 20 times using `inference_learning.ipynb` and `inference_learning_1.ipynb` for P1 and P2, respectively. Make sure to make folder `infer_nets/net0` and `infer_nets/net1` to save the learned mappings for each.
+
 Using these 20 mappings, we implement Algorithm 2 by implementing `OU_inference_sim.ipynb` and `OU_inference_sim_1.ipynb`. We vary hyperparameter $r = \{.05, .07, .10\}$. The results when $r = .05$ and $.07$ are uploaded, while the case of $r = .10$ cannot be uploaded due to the size issue in Github.
 
 Table 1 can be obtained by implementing `Perform_eval_inference.ipynb`.
