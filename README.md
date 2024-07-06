@@ -25,9 +25,11 @@ Finally, implement `Perform_eval.ipynb`, then you will get Figures in Section 5.
 
 
 ### Section 5.2
-For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively. Algorithm 1 is then implemented 20 times using `inference_learning.ipynb` and `inference_learning_1.ipynb` for P1 and P2, respectively.
+For both P1 and P2, we generate synthetic data first. Implement `inference_generator.ipynb`, and then `infer_sim_0.pt` and `infer_sim_1.pt` will be generated, which are synthetic data for P1 and P2, respectively. Algorithm 1 is then implemented 20 times using `inference_learning.ipynb` and `inference_learning_1.ipynb` for P1 and P2, respectively. 
+Using these 20 mappings, we implement Algorithm 2 by implementing `OU_inference_sim.ipynb` and `OU_inference_sim_1.ipynb`. We vary hyperparameter $r = \{.05, .07, .10\}$. The results when $r = .05$ and $.07$ are uploaded, while the case of $r = .10$ cannot be uploaded due to the size issue in Github.
 
-Finally, we implement 
+### Section 5.3
+
 
 ## Real Data Analysis (Section 6)
 We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
