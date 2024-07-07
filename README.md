@@ -33,7 +33,11 @@ Using these 20 mappings, we implement Algorithm 2 by implementing `OU_inference_
 
 Table 1 can be obtained by implementing `Perform_eval_inference.ipynb`.
 
+
 ### Section 5.3
+Here, we consider four differnet processes, OUJ, SQRJ, PBJD, and BOUJ. First as before, we should generate synthetic data that is used for inference. To obtain the results in Figure 8, we generate 2,500,000 synthetic data for each size $\in \{1000, 3000, 5000 \}$ and process. To obtain these, implement `JD_simulation generator.ipynb`. Since it takes numerous time to finish, we recommend you use some parallel computing for implementing these. 
+
+And we get the NCoin-JDP estimator mapping using 250,000 synthetica data for each iteration (We iterate 10 times for each case.) Implement `MROUJ.ipynb`, `SQRJ.ipynb`, `PBJD.ipynb` and `BOUJ.ipynb`.
 
 
 ## Real Data Analysis (Section 6)
