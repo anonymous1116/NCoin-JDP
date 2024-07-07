@@ -41,8 +41,12 @@ And we get the NCoin-JDP estimator mapping using 250,000 synthetica data for eac
 
 In order to improve reproducibility, here in Github direcotry, we make each folder and save learned nets. To obtain Figure 8, above two steps are not necessary. Implement `JDP_performance_eval2.ipynb`.
 
-We implement Algorithm 2 to perform Bayesian inference for a sample path generated from each process. Implement `MROUJ/MROUJ_infer.ipynb`, `SQRJ/SQRJ_infer.ipynb`, `PBJD/PBJD_infer.ipynb` and `BOUJ/BOUJ_infer.ipynb`. For implementation, the generated synthetic data is essential. Recall `JD_simulation generator.ipynb` for the generation. The results are saved in 
+We implement Algorithm 2 to perform Bayesian inference for a sample path generated from each process. Implement `MROUJ/MROUJ_infer.ipynb`, `SQRJ/SQRJ_infer.ipynb`, `PBJD/PBJD_infer.ipynb` and `BOUJ/BOUJ_infer.ipynb`. For implementation, the generated synthetic data is essential. Recall `JD_simulation generator.ipynb` for the generation. 
 
+For whom does not want to generate such files, we save our results. Go to `MROUJ/MROUJ_calibrate`, `SQRJ/SQRJ_calibrate`, `PBJD/PBJD_calibrate`, and `BOUJ/BOUJ_calibrate` for these.
+
+
+### Section 5.4
 
 
 ## Real Data Analysis (Section 6)
