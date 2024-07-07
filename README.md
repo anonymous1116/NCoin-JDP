@@ -57,4 +57,6 @@ The first period, P1, spans 1992-01-12 to 2000-01-01, marking the recovery from 
 
 <img width="883" alt="image" src="https://github.com/anonymous1116/NCoin-JDP/assets/126707827/7eb74972-c7bb-4fd0-bb65-a76753a37f7d">
 
-Implement 
+Implement `RDA_stocks.ipynb` to reproduce the results in Section 6. The results are uploaded in the folder `RDA_calibrate`.
+
+
