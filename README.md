@@ -37,10 +37,11 @@ Table 1 can be obtained by implementing `Perform_eval_inference.ipynb`.
 ### Section 5.3
 Here, we consider four differnet processes, OUJ, SQRJ, PBJD, and BOUJ. First as before, we should generate synthetic data that is used for inference. To obtain the results in Figure 10, and Figure 11, we generate 7,500,000 synthetic data for each size $\in \{1000, 3000, 5000 \}$ and process. To obtain these, implement `JD_simulation generator.ipynb`. Since it takes numerous time to finish, we recommend you use some parallel computing for implementing these. 
 
-And we get the NCoin-JDP estimator mapping using 250,000 synthetica data for each iteration (We iterate 10 times for each case.) Implement `MROUJ.ipynb`, `SQRJ.ipynb`, `PBJD.ipynb` and `BOUJ.ipynb`. Before implementing, make folder to save learned networks. 
+And we get the NCoin-JDP estimator mapping using 250,000 synthetica data for each iteration (We iterate 10 times for each case.) Implement `MROUJ/MROUJ.ipynb`, `SQRJ/SQRJ.ipynb`, `PBJD/PBJD.ipynb` and `BOUJ/BOUJ.ipynb`. Before implementing, make folder to save learned networks. 
 
 In order to improve reproducibility, here in Github direcotry, we make each folder and save learned nets. To obtain Figure 8, above two steps are not necessary. Implement `JDP_performance_eval2.ipynb`.
 
+We implement Algorithm 2 to perform Bayesian inference for a sample path generated from each process. Implement `MROUJ/MROUJ_infer.ipynb`, `SQRJ/SQRJ_infer.ipynb`, `PBJD/PBJD_infer.ipynb` and `BOUJ/BOUJ_infer.ipynb`. For implementation, the generated synthetic data is essential. Recall `JD_simulation generator.ipynb` for the generation. The results are saved in 
 
 
 
