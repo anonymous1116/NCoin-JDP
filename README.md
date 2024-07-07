@@ -52,7 +52,9 @@ In order to obtain Table 2 and Table 3, `JD_simulation generator2.ipynb` should 
 The results are saved in `results` folder.
 
 ## Real Data Analysis (Section 6)
-We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
+Using NCoin-JDP, we conduct a comparative study of jumps in daily closing prices of the NASDAQ and S\&P 500 between 1993 and 2024, focusing on the evaluation of economic parameters during the recent COVID-19 pandemic. We divide the periods into five segments, P1 to P5, each with a size of $n=2015$.
+The first period, P1, spans 1992-01-12 to 2000-01-01, marking the recovery from the mild recession of the early 1990s. The second period, P2, is from 1998-01-01 to 2006-01-05, which includes the 9/11 attack that severely impacted the U.S. economy and triggered global market disruptions. This period also covers the dotcom bubble's rise and subsequent collapse between 2001 and 2002. The third period, P3, runs from 2005-01-01 to 2013-01-04, encompassing the 2007-2008 financial crisis that triggered the Great Recession and significantly affected both stock markets. The fourth period, P4, extends from 2011-01-01 to 2019-01-05, during which the US economy slowly recovered from the Great Recession and experienced steady growth. The final period, P5, is set from 2016-01-01 to 2024-01-05, including the Great Lockdown resulting from the COVID-19 pandemic in 2019. This division is chosen to delete seasonal effects, allowing us to analyze and compare the impact of major economic events on the stock market over the specified periods.
 
+<img width="883" alt="image" src="https://github.com/anonymous1116/NCoin-JDP/assets/126707827/7eb74972-c7bb-4fd0-bb65-a76753a37f7d">
 
-<img width="779" alt="Screenshot 2023-03-03 121408" src="https://user-images.githubusercontent.com/126707827/222784718-b72d35a1-33b0-44d3-bb47-769b1282e57f.png">
+Implement 
