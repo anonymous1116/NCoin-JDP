@@ -47,7 +47,7 @@ For whom does not want to generate such files, we save our results. Go to `MROUJ
 
 
 ### Section 5.4
-
+In order to obtain table 2 and 3, `JD_simulation generator2.ipynb` should be implemented first to secure synthetic data. For table 2, implement `Compare_MOUJ`. For table 3, implement `Compare_MOUJ_sigma_1`, `Compare_MOUJ_sigma_2`. The results are saved in `results` folder.
 
 ## Real Data Analysis (Section 6)
 We collect adjusted closing price of MSFT and ADBE on n=1259 trading days between January 01, 2013 and December 31, 2017. See the image below. We model a pair trading schemes using those two data. For detailed analysis go to the folder, `RealDataAnalysis` and run `adbemscf.ipynb`
