@@ -37,6 +37,6 @@ num_training=100000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_SA1.py --experiment "SA1" --seed $seeds--task $TASK --layer_len $layer_len --num_training $num_training
+python training_SA1.py --experiment "SA1" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
