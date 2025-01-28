@@ -119,8 +119,8 @@ def get_args():
                         help='experiment type: S1..')
     parser.add_argument('--task', type=str, default='OU', 
                         help='Simulation type: OU, CIR..')
-    #parser.add_argument("--num_training", type=int, default=500_000,
-    #                    help="Number of simulations for training (default: 500_000)")
+    parser.add_argument("--num_training", type=int, default=500_000,
+                        help="Number of simulations for training (default: 500_000)")
     parser.add_argument("--N_EPOCHS", type=int, default=200, 
                         help="Number of EPOCHS (default: 100)")
     parser.add_argument("--seed", type = int, default = 1,
