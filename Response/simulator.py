@@ -31,15 +31,15 @@ class Simulators:
         self.n = n
         self.delta = delta
 
-    def __call__(self, theta, n, delta):
+    def __call__(self, theta):
             if self.task == "OU":
-                return self.OU(theta, n, delta)
+                return self.OU(theta)
             elif self.task =="OU_summary":
-                return self.OU_summary(self.OU(theta, n, delta))
+                return self.OU_summary(self.OU(theta))
             
-    def OU(self, theta, n, delta):
+    def OU(self, theta):
         L_OU = theta.size(0)
-        time_OU = np.arange(0,n+1)/n * n * delta
+        time_OU = np.arange(0,self.n+1)/self.n * self.n * self.delta
         mu_OU, theta_OU, sigma2_OU = theta[:,0], theta[:, 1], theta[:, 2]
         z0 = torch.normal(theta_OU, torch.sqrt(sigma2_OU/(2*mu_OU)))
         path_OU = torch.zeros(L_OU, time_OU.size)
@@ -56,19 +56,25 @@ class Simulators:
         """
         X: torch size: [L,n]
         """
-        L0 = X.size()[0]
         n0 = X.size()[1]
 
-        sum1 = torch.zeros(L0) # sum x_i x_{i-1}
-        sum2 = torch.zeros(L0) # sum x_i
-        sum3 = torch.zeros(L0) # sum x_{i-1}
-        sum4 = torch.zeros(L0) # sum x_{i-1}^2
-        sum5 = torch.zeros(L0) # sum x_{i}^2
+        # Efficient vectorized computation
+        X_prev = X[:, :-1]  # X_{i-1}
+        X_next = X[:, 1:]   # X_{i}
 
-        for l in range(n0-1):
-            sum1 = sum1 + X[:,l+1] * X[:,l]
-            sum2 = sum2 + X[:,l+1]
-            sum3 = sum3 + X[:,l]
-            sum4 = sum4 + torch.pow(X[:,l],2)
-            sum5 = sum5 + torch.pow(X[:,l+1],2)
-        return(torch.stack(( (sum1 - sum2 * sum3/n0 ) /n0, sum2/n0, sum3/n0, sum4/n0 - (sum3/n0)**2, sum5/n0 - (sum2/n0)**2) ,1))
+        sum1 = torch.sum(X_next * X_prev, dim=1)
+        sum2 = torch.sum(X_next, dim=1)
+        sum3 = torch.sum(X_prev, dim=1)
+        sum4 = torch.sum(X_prev**2, dim=1)
+        sum5 = torch.sum(X_next**2, dim=1)
+
+        n0 = X.size(1)
+
+        # Compute summary statistics
+        S1 = (sum1 - sum2 * sum3 / n0) / n0
+        S2 = sum2 / n0
+        S3 = sum3 / n0
+        S4 = sum4 / n0 - (sum3 / n0)**2
+        S5 = sum5 / n0 - (sum2 / n0)**2
+
+        return torch.stack((S1, S2, S3, S4, S5), dim=1)

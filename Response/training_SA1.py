@@ -20,8 +20,7 @@ def main(args):
 
     # Initialize the Priors and Simulators classes
     priors = Priors(args.task)
-    simulators = Simulators(args.task)
-
+    
     task_params = get_task_parameters(args.task)
     limits = task_params["limits"]
     n = task_params["n"]
@@ -31,7 +30,8 @@ def main(args):
     theta = priors().sample((args.num_training,))
 
     # Run the simulator
-    X = simulators(theta, n = n, delta = delta)
+    simulators = Simulators(args.task, n = n, delta = delta)
+    X = simulators(theta)
     
     # Learning hyperparameters
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
