@@ -18,7 +18,7 @@ module use /depot/wangxiao/etc/modules
 module load conda-env/sbi_pack-py3.11.7
 
 # Change to the directory where the job was submitted from
-SLURM_SUBMIT_DIR=/home/hyun18/NeuralABC
+SLURM_SUBMIT_DIR=/home/hyun18/NCoin-JDP/Response
 cd $SLURM_SUBMIT_DIR
 
 # Define the starting point for seed 
