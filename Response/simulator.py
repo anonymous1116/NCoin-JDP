@@ -5,12 +5,16 @@ import torch.distributions as D
 from sbi.utils import BoxUniform
 
 def get_task_parameters(task):
+    x0_list = None
     task_params = {"OU_summary": {"x0_list": x0_list if x0_list else [],  
                  "limits": [[1, 5], [1, 2.5], [0.5, 2.0]],
                  "n": int(500),
                  "delta": 1/12
                 }
     }
+    if task not in task_params:
+        raise ValueError(f"Unknown task: {task}")
+    return task_params[task]
 
 class Priors:
     def __init__(self, task):

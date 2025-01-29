@@ -134,7 +134,7 @@ def NCoinJDP_train(X, Y, net_str, device="cpu", p_train=0.7, N_EPOCHS=250, lr=1e
     torch.cuda.empty_cache()
     del net, X_train, Y_train, X_val, Y_val, dataloader, weight_1
     print(f"============= Best validation loss: {best_val_loss} =============")
-    return best_model_state
+    return best_model_state, best_val_loss
 
 
 class WeightDecayScheduler:

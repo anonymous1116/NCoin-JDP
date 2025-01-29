@@ -54,7 +54,7 @@ def main(args):
     print(f"start training for mean function", flush=True)
     start_time = time.time()  # Start timer
     val_batch = 1_000 if args.task == "OU" else 10_000
-    tmp = NCoinJDP_train(X, theta, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
+    tmp, best_error = NCoinJDP_train(X, theta, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
     print(f"Mean Function Training completed in {elapsed_time/60:.2f} mins")
@@ -62,8 +62,8 @@ def main(args):
     net.load_state_dict(tmp)
 
     torch.save(net.state_dict(),  output_dir + "/" + args.task + str(args.seed) +"_mean.pt")
-    torch.save(elapsed_time,  output_dir + "/" + args.task + str(args.seed) +"_time.pt")
-    torch.save(torch.cuda.get_device_name(0), output_dir + "/" + args.task + str(args.seed)+ "_gpu_mean.pt")
+    torch.save([elapsed_time, best_error, torch.cuda.get_device_name(0)],  output_dir + "/" + args.task + str(args.seed) +"_info.pt")
+    
     net = net.to("cpu")
     print("## cMAD training job script submitted ##")
 
