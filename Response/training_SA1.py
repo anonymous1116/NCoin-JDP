@@ -116,9 +116,9 @@ python NABC_training_cMAD --task {args.task} --num_training {args.num_training} 
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")
     parser.add_argument('--experiment', type=str, default='SA1', 
-                        help='experiment type: S1..')
+                        help='experiment type: S1 ...')
     parser.add_argument('--task', type=str, default='OU', 
-                        help='Simulation type: OU, CIR..')
+                        help='Simulation type: OU, CIR ...')
     parser.add_argument("--num_training", type=int, default=500_000,
                         help="Number of simulations for training (default: 500_000)")
     parser.add_argument("--N_EPOCHS", type=int, default=200, 
