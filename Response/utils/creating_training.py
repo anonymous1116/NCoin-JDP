@@ -13,8 +13,8 @@ def create_training_job_script(experiment, task, num_training, N_EPOCHS, seed, l
     job_script = f"""#!/bin/bash
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=00:30:00
-#SBATCH --account=debug
+#SBATCH --time=04:00:00
+#SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --output=output_log/{experiment}/{task}/output_log_{seed}%A.log
