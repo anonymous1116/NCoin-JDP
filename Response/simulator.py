@@ -24,6 +24,9 @@ class Priors:
         # Call the appropriate prior function based on the task
         if self.task == 'OU':
             return self.OU()
+        if self.task == 'OU_summary':
+            return self.OU()
+        
         
     def OU(self):
         return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
