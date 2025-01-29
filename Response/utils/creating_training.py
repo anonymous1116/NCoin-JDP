@@ -50,7 +50,7 @@ echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCH
     print(f"Job {job_file_path} submitted.")
 
 def main(args):
-    for j in range(1, 3):
+    for j in range(1, 6):
     #for j in range(1, 3):    
         create_training_job_script(args.experiment, args.task, args.num_training, args.N_EPOCHS, j, args.layer_len, args.calibrate, args.num_calibrations, args.iter_calibrations, args.c2st)    
         print(f"create training job script task: '{args.task}', 'num_training: {args.num_training}', N_EPOCHS: {args.N_EPOCHS} seed: {args.seed} layer_len={args.layer_len} num_calibrations = {args.num_calibrations}")
