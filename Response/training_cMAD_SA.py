@@ -61,7 +61,7 @@ def main(args):
     start_time = time.time()
     torch.manual_seed(args.seed * 2)
     val_batch = 1_000 if args.task == "OU" else 10_000
-    tmp = cond_mad_train(X, resid, net_var, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
+    tmp, best_val_loss = cond_mad_train(X, resid, net_var, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
 
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
@@ -80,8 +80,7 @@ def main(args):
     else:
         print(f"Directory '{output_dir}' already exists.")
     torch.save([net.state_dict(),net_var.state_dict()] ,  output_dir + "/" + args.task + str(args.seed) +".pt")
-    torch.save(elapsed_time, output_dir + "/" + args.task + str(args.seed) +"_time_cMAD.pt")
-    torch.save(torch.cuda.get_device_name(0), output_dir + "/" + args.task + str(args.seed)+"_gpu_cMAD.pt")
+    torch.save([elapsed_time, best_val_loss, torch.cuda.get_device_name(0)] , output_dir + "/" + args.task + str(args.seed) +"cMAD_info.pt")
     print("## DONE ##")
 
 
