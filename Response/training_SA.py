@@ -5,7 +5,7 @@ import os
 import subprocess
 from module import FL_Net
 import time
-from NCoinJDP import NCoinJDP_train
+from NCoinJDP import NCoinJDP_train, ABC_rej
 from simulator import Simulators, Priors, get_task_parameters
 #from utils.batch_process import resid_chunk_process
 

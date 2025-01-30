@@ -136,6 +136,54 @@ def NCoinJDP_train(X, Y, net_str, device="cpu", p_train=0.7, N_EPOCHS=250, lr=1e
     print(f"============= Best validation loss: {best_val_loss} =============")
     return best_model_state, best_val_loss
 
+def compute_mad(X):
+    # Move the tensor to GPU if available
+    if torch.cuda.is_available():
+        X = X.to('cuda')
+
+    # Compute the median for each column
+    medians = torch.median(X, dim=0).values  # Shape: (num_columns,)
+
+    # Compute the absolute deviations from the median
+    abs_deviation = torch.abs(X - medians)  # Broadcasting over rows
+
+    # Compute the MAD for each column
+    mad = torch.median(abs_deviation, dim=0).values  # Shape: (num_columns,)
+
+    # Return the result on the CPU
+    return mad.cpu()
+
+def cond_mad_train(X, resid, net_var, device = "cpu", p_train = 0.7, N_EPOCHS = 250, lr = 1e-3, val_batch = 10_000):
+    torch.set_default_device(device)
+    X = X.to(device)
+    resid = resid.to(device)
+    resid = torch.max(torch.abs(resid), torch.ones(1) * 1e-30).log()
+    
+    return NCoinJDP_train(X, resid, net_var, device, p_train, N_EPOCHS, lr, val_batch = val_batch)
+
+
+def ABC_rej(x0, X_cal, Y_cal, tol, device):
+    # Move all tensors to the target device at once
+    x0 = x0.to(device)
+    X_cal = X_cal.to(device)
+    Y_cal = Y_cal.to(device)
+    
+    # Calculate the squared Euclidean distance
+    mad = compute_mad(X_cal)
+    mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
+    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/mad**2, 1))
+
+    # Determine threshold distance using top-k rather than sorting the entire tensor
+    num = X_cal.size(0)
+    nacc = int(num * tol)
+    ds = torch.topk(dist, nacc, largest=False).values[-1]
+    
+    # Create mask and filter based on the threshold distance
+    wt1 = (dist <= ds)
+    
+    # Select points within tolerance and return to CPU if needed
+    return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
+
 
 class WeightDecayScheduler:
     def __init__(self, optimizer, initial_weight_decay, factor, patience):
