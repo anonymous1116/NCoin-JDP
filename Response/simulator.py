@@ -5,7 +5,15 @@ import torch.distributions as D
 from sbi.utils import BoxUniform
 
 def get_task_parameters(task):
-    x0_list = None
+    x0_list = []
+    if task == "OU_summary" or task == "OU":
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+
+        # Construct the full path to the slcp2 file
+        file_path = os.path.join(current_dir, "OU_obs.pt")
+        tmp = torch.load(file_path)
+        
+        x0_list = tmp[0].numpy().tolist()
     task_params = {"OU_summary": {"x0_list": x0_list if x0_list else [],  
                  "limits": [[1, 5], [1, 2.5], [0.5, 2.0]],
                  "n": int(500),
