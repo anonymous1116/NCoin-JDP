@@ -49,13 +49,54 @@ echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCH
     subprocess.run(['sbatch', job_file_path])
     print(f"Job {job_file_path} submitted.")
 
-    
+def create_training_cMAD_job_script(experiment, task, num_training, N_EPOCHS, seed, layer_len):
+    job_script = f"""#!/bin/bash
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --time=04:00:00
+#SBATCH --account=standby
+#SBATCH --gpus-per-node=1
+#SBATCH --nodes=1
+#SBATCH --output=output_log/{experiment}/{task}/output_log_{seed}%A.log
+#SBATCH --error=output_log/{experiment}/{task}/error_log_{seed}%A.txt
+
+# Create the output_log directory if it doesn't exist
+mkdir -p output_log/{experiment}/{task}
+
+# Load the required Python environment
+module use /depot/wangxiao/etc/modules
+module load conda-env/sbi_pack-py3.11.7
+
+# Change to the directory where the job was submitted from
+SLURM_SUBMIT_DIR=$(pwd)
+cd $SLURM_SUBMIT_DIR
+
+# Run the Python script for the current simulation
+echo "Running training for task task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len}"
+python training_cMAD_SA.py --experiment {experiment} --task {task} --num_training {num_training} --N_EPOCHS {N_EPOCHS} --seed {seed} --layer_len {layer_len} 
+echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len}"
+"""
+    # Create the directory for SLURM files if it doesn't exist
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{experiment}/{task}/J_{int(num_training/1000)}K/slurm_files"
+    os.makedirs(output_dir, exist_ok=True)
+
+    job_file_path = os.path.join(output_dir, f"{task}_cMAD_{num_training}_{seed}.sh")
+    with open(job_file_path, 'w') as f:
+        f.write(job_script)
+    print(f"Job script created: {job_file_path}")
+
+    # Submit the job immediately
+    subprocess.run(['sbatch', job_file_path])
+    print(f"Job {job_file_path} submitted.")
+
+
 
 def main(args):
     for j in range(1, 6):
     #for j in range(1, 3):    
-        create_training_job_script(args.experiment, args.task, args.num_training, args.N_EPOCHS, j, args.layer_len, args.calibrate, args.num_calibrations, args.iter_calibrations, args.c2st)    
-        print(f"create training job script task: '{args.task}', 'num_training: {args.num_training}', N_EPOCHS: {args.N_EPOCHS} seed: {args.seed} layer_len={args.layer_len} num_calibrations = {args.num_calibrations}")
+        #create_training_job_script(args.experiment, args.task, args.num_training, args.N_EPOCHS, j, args.layer_len, args.calibrate, args.num_calibrations, args.iter_calibrations, args.c2st)    
+        create_training_cMAD_job_script(args.experiment, args.task, args.num_training, args.N_EPOCHS, j, args.layer_len)    
+        print(f"create training job script task: '{args.task}', 'num_training: {args.num_training}', N_EPOCHS: {args.N_EPOCHS} seed: {args.seed}")
 
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")

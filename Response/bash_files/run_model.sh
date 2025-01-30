@@ -28,20 +28,20 @@ seed_START=1
 seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
 TASK="OU_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
-N_EPOCHS=2
+N_EPOCHS=200
 layer_len=256
-num_training=100000
+num_training=500000
 #num_calibrations=100000000
 #num_calibrations=1000000000
 
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_cMAD_SA.py --experiment "SA1" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS
+#python training_cMAD_SA.py --experiment "SA1" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS
 #python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS
 #python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 50000 --N_EPOCHS $N_EPOCHS
 #python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS
 #python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 200000 --N_EPOCHS $N_EPOCHS
 #python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 300000 --N_EPOCHS $N_EPOCHS
-#python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 500000 --N_EPOCHS $N_EPOCHS
+python utils/creating_training.py --experiment "SA1" --task $TASK --layer_len $layer_len --num_training 500000 --N_EPOCHS $N_EPOCHS
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
