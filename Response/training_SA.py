@@ -33,6 +33,7 @@ def main(args):
     simulators = Simulators(args.task, n = n, delta = delta)
     X = simulators(theta)
     
+    ABC_rej()
     # Learning hyperparameters
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
 

@@ -210,3 +210,47 @@ class WeightDecayScheduler:
                 print(f"Epoch {epoch}: Reduced weight decay to {param_group['weight_decay']:.6e}")
         else:
             self.epochs_since_last_update += 1
+
+
+def learning_checking(X, Y, net, num = 10000, name = None):
+    net = net.to("cpu")
+    X = X.to("cpu")
+    Y = Y.to("cpu")
+    _, p = Y.size()
+    true_name = []
+    esti_name = []
+    
+    for i in range(p):
+        true_name.append(r'true $\theta_' + str(i) + '$')
+        esti_name.append(r'$\hat{\theta}_' + str(i) + '$')
+    
+    indices = torch.tensor(np.random.randint(_, size=num)).to("cpu")
+    X_test = X[indices,:]
+    Y_test = Y[indices,:]
+    
+    
+    with torch.no_grad():
+        net.eval()
+        tmp = net(X_test)
+        tmp = tmp.detach().cpu().numpy()
+
+    ## Plot for model checking
+    lim_left = torch.quantile(Y_test,.0001, 0).detach().cpu().numpy()
+    lim_right = torch.quantile(Y_test,.9999, 0).detach().cpu().numpy()
+
+    fig, axes = plt.subplots(1, len(tmp[0]), figsize=(20,3))
+    fig.suptitle('Learning Checking', fontsize= 10)
+
+    for i in range(p):
+        lim0 = lim_left[i]
+        lim1 = lim_right[i]
+
+        tmp1 = tmp[:, i]
+        axes[i].scatter(Y_test[:,i], tmp1, marker='o', color='b', s= 1)
+        axes[i].set_xlabel(true_name[i], fontsize=15)
+        axes[i].set_ylabel(esti_name[i], fontsize=15)
+        axes[i].plot(np.linspace(lim0, lim1, 1000), np.linspace(lim0, lim1, 1000), color = "red", linestyle='dashed', linewidth = 2.5)
+        axes[i].set_axisbelow(True)
+        axes[i].grid(color='gray', linestyle='dashed')
+        axes[i].set_ylim([lim0, lim1])
+        axes[i].set_xlim([lim0, lim1])

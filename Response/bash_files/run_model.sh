@@ -6,7 +6,7 @@
 #SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1-2           # Create a job array with indices from 1 to 10
+#SBATCH --array=1           # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
