@@ -171,7 +171,7 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Calculate the squared Euclidean distance
     mad = compute_mad(X_cal)
     mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
-    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/mad**2, 1))
+    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/(mad+1e-8) **2, 1))
 
     # Determine threshold distance using top-k rather than sorting the entire tensor
     num = X_cal.size(0)
