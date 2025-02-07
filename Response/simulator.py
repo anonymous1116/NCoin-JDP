@@ -23,6 +23,11 @@ def get_task_parameters(task):
                  "limits": [[1, 5], [1, 2.5], [0.5, 2.0]],
                  "n": int(501),
                  "delta": 1/12
+                },
+                "MROUJ_summary": {"x0_list": x0_list if x0_list else [],  
+                 "limits": [[0.1, 3], [-1.0, 1.0], [0.1, 1.5], [0.01, 1], [0.1, 1.5]],
+                 "n": int(500),
+                 "delta": 1/12
                 }
     }
     if task not in task_params:
@@ -37,12 +42,17 @@ class Priors:
         # Call the appropriate prior function based on the task
         if self.task == 'OU':
             return self.OU()
-        if self.task == 'OU_summary':
+        elif self.task == 'OU_summary':
             return self.OU()
+        elif self.task == 'MROUJ_summary':
+            return self.MROUJ()
         
         
     def OU(self):
         return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
+
+    def MROUJ(self):
+            return BoxUniform(low=torch.tensor([0.1, -1, 0.1, 0.01, 0.1]), high=torch.tensor([3, 1, 1.5, 1, 1.5]))
 
 
 class Simulators:
