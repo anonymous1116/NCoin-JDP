@@ -4,6 +4,11 @@ import numpy as np
 import torch.distributions as D
 from sbi.utils import BoxUniform
 
+from torch.distributions.exponential import Exponential
+from torch.distributions.beta import Beta
+from torch.distributions.pareto import Pareto
+
+
 def get_task_parameters(task):
     x0_list = []
     if task == "OU_summary" or task == "OU":
@@ -51,6 +56,10 @@ class Simulators:
                 return self.OU(theta)
             elif self.task =="OU_summary":
                 return self.OU_summary(self.OU(theta))
+            elif self.task =="MROUJ":
+                return self.MROUJ(theta)
+            elif self.task =="MROUJ_summary":
+                return self.MROUJ_summary(self.MROUJ(theta))
             
     def OU(self, theta):
         L_OU = theta.size(0)
@@ -67,6 +76,29 @@ class Simulators:
             path_OU[:,l+1] = z0
         return(path_OU)
     
+    def MROUJ(self, theta):
+        obtime  = np.arange(0,self.n+1)/self.n * self.n * self.delta
+        kappa, beta, sigma, lamb, mu = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4]
+        m = 50
+        L_tmp = kappa.size(0)
+        y0 = torch.zeros(L_tmp)
+        z0 = y0
+        path = torch.zeros(L_tmp, obtime.size)
+        path[:,0] = z0
+
+        for l in range(len(obtime)-1):
+            # X, Y generating
+            del_x = obtime[l+1] - obtime[l]
+            del_y = del_x / m
+
+            for j in range(m):
+                ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
+                ran_num2 = Exponential(mu * torch.ones(L_tmp)).sample() # rate
+                ran_num3 = torch.poisson(torch.ones(L_tmp) * lamb * del_y)
+                z0 = z0 + kappa*(beta-z0)*del_y + sigma * ran_num * del_y ** (1/2) + ran_num2 * ran_num3
+            path[:,l+1] = z0
+        return(path)    
+
     def OU_summary(self, X):
         """
         X: torch size: [L,n]
@@ -93,3 +125,66 @@ class Simulators:
         S5 = sum5 / n0 - (sum2 / n0)**2
 
         return torch.stack((S1, S2, S3, S4, S5), dim=1)
+
+    def MROUJ_summary(self, X):
+        """
+        X: torch size: [L,n]
+        """
+        L0 = X.size()[0]
+        n0 = X.size()[1]
+        
+        Xi = X[:,range(1,n0)]
+        Xi1 = X[:,range(0,n0-1)]
+        
+        s0 = torch.mean(Xi, 1)
+        s1 = torch.mean(Xi1, 1)
+        
+        Xi = Xi - torch.reshape(s0, (L0, 1))
+        Xi1 = Xi1 - torch.reshape(s1, (L0, 1))
+        
+        s2 = torch.mean(Xi * Xi1, 1) / n0
+        s3 = torch.mean(Xi **2 , 1) /n0
+        s4 = torch.mean(Xi1 **2 , 1) /n0
+        
+        s5 = torch.mean(torch.abs(Xi - Xi1), 1)
+        s6 = torch.mean((Xi - Xi1)**2 , 1) / n0 
+        s7 = torch.mean((Xi - Xi1)**3 , 1) / n0
+        s8 = torch.mean((Xi - Xi1)**4 , 1) / n0 ** 2
+        
+        s9 = torch.mean((Xi - Xi1)**2 * Xi, 1) / n0 
+        s10 = torch.mean((Xi - Xi1)**2 * Xi ** 2, 1)/ n0 ** 2
+        
+        Xi = Xi + torch.reshape(s0, (L0, 1))
+        Xi1 = Xi1 + torch.reshape(s1, (L0, 1))
+        
+        s11 = torch.mean(Xi * Xi1, 1) - s0 * s1
+        s11 = s11 / ( torch.mean(Xi1 ** 2, 1) - s1 ** 2 )
+        
+        s12 = s0 * torch.mean(Xi1 ** 2,1) - s1 * torch.mean(Xi * Xi1, 1)
+        s12 = s12 / (torch.mean(Xi1 ** 2, 1) - s1 ** 2)
+        
+        # Jump intensity
+        tmp = abs(Xi - Xi1)
+        
+        thres = [1e-5 * 3, 1e-5 * 6, 1e-5 * 9, 1e-4 * 3, 1e-4 * 6, 1e-4 * 9, 1e-3 * 3, 1e-3 * 6, 1e-3 * 9,
+            1e-2 * 3, 1e-2 * 6, 1e-2 * 9, 1e-1 * 3, 1e-1 * 6, 1e-1 * 9,
+                1.0, 1.25, 1.5, 1.75, 2, 2.25, 2.5, 2.75, 3, 3.25]
+        thres_tmp = []
+        for i in range(len(thres)):
+            temp = torch.sum( (tmp > thres[i] ), 1) /n0
+            thres_tmp.append(temp)
+
+        j_int = torch.column_stack(thres_tmp)
+        
+        # Jump magnitude
+        tmp = Xi - Xi1
+        num = 33
+        q = []
+        for i in range(num+1):
+            q.append(i/num)
+        
+        q = torch.tensor(q)
+        mag_q = torch.transpose(torch.quantile(tmp, q, 1), 0, 1)
+        
+        return(torch.column_stack((s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, 
+                                s10, s11, s12, j_int, mag_q)) ) 
