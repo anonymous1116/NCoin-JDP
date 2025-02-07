@@ -81,3 +81,42 @@ def learning_checking_kernel(Y_val, Y_val_pred, num =10000):
         axes[i].grid(color='gray', linestyle='dashed')
         axes[i].set_ylim([lim0, lim1])
         axes[i].set_xlim([lim0, lim1])
+
+def bandwidth_select(x0, X_val, Y_val, X_train, Y_train, device, tol = .05):
+    k = int(tol * X_train.size(0))
+    bandwidths = np.exp(np.linspace(-5,2,30))
+    bandwidth_list = []
+    for j in range(Y_val.size(1)):
+        y_pred = []
+        models = []
+        
+        X_val_loc, Y_val_loc = ABC_rej(x0, X_val, Y_val, tol = tol, device = device)
+        
+        for l in range(len(bandwidths)):
+            try:
+                y_pred_j_tmp, model_j = local_linear_regression(X_train, Y_train[:, j], X_val_loc, bandwidth=bandwidths[l], k=k)
+                y_pred_j = torch.mean((torch.tensor(y_pred_j_tmp) - Y_val_loc[:,j]) ** 2) ** (1/2)
+                print(y_pred_j)
+            except Exception as e:
+                print(f"Error encountered with bandwidth {bandwidths[l]}: {e}")
+                y_pred_j, model_j = np.nan, None  # or another placeholder value
+
+            y_pred.append(y_pred_j)
+            models.append(model_j)
+        print(f"{l}th bandwidth")
+        # Convert y_pred to a numpy array for easier handling
+        y_pred_array = np.array(y_pred, dtype=float)  # Ensure it's a float array to handle np.nan
+
+        # Mask out nan values
+        valid_indices = ~np.isnan(y_pred_array)  # Boolean mask: True where values are not nan
+
+        # Check if there are any valid values
+        if np.any(valid_indices):
+            min_index = np.argmin(y_pred_array[valid_indices])  # Find min index in valid values
+            min_index = np.where(valid_indices)[0][min_index]  # Map back to original index
+            print(f"The index of the minimum valid y_pred value is: {min_index}")
+        else:
+            print("All values in y_pred are NaN, cannot determine the minimum index.")
+
+        bandwidth_list.append(bandwidths[min_index])
+    return bandwidth_list
