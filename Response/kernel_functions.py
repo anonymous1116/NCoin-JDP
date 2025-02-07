@@ -3,7 +3,7 @@ import torch
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 from sklearn.model_selection import KFold
-
+from NCoinJDP import ABC_rej
 
 
 def gaussian_kernel(distances, bandwidth):
