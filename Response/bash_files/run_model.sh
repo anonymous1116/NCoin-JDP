@@ -27,7 +27,7 @@ seed_START=1
 # Get the current N_EPOCHS value based on the job array index
 seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
-TASK="MROUJ_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
+TASK="MROUJ"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
 N_EPOCHS=200
 layer_len=256
 num_training=100000
