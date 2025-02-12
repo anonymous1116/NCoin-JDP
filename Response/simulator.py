@@ -44,9 +44,10 @@ class Priors:
             return self.OU()
         elif self.task == 'OU_summary':
             return self.OU()
+        elif self.task == 'MROUJ':
+            return self.MROUJ()
         elif self.task == 'MROUJ_summary':
             return self.MROUJ()
-        
         
     def OU(self):
         return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))

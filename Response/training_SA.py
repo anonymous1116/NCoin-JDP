@@ -3,7 +3,7 @@ import numpy as np
 import argparse
 import os
 import subprocess
-from module import FL_Net
+from module import FL_Net, GRU_net
 import time
 from NCoinJDP import NCoinJDP_train, ABC_rej
 from simulator import Simulators, Priors, get_task_parameters
@@ -48,7 +48,10 @@ def main(args):
     else:
         print(f"Directory '{output_dir}' already exists.")
     
-    net = FL_Net(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
+    if args.task == "MROUJ" or args.task == "OU":
+        net = GRU_net(input_dim = 1, hidden_dim = Hs, output_dim = D_out)
+    else:
+        net = FL_Net(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
         
     # Train Mean Function
     print(f"start training for mean function", flush=True)
