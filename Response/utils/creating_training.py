@@ -37,7 +37,7 @@ python training_SA.py --experiment {experiment} --task {task} --num_training {nu
 echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len} calibrate = {calibrate_flag} num_calibrations = {num_calibrations}"
 """
     # Create the directory for SLURM files if it doesn't exist
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{experiment}/{task}/J_{int(num_training/1000)}K/slurm_files"
+    output_dir = f"{experiment}/{task}/J_{int(num_training/1000)}K/slurm_files"
     os.makedirs(output_dir, exist_ok=True)
 
     job_file_path = os.path.join(output_dir, f"{task}_train_{num_training}_{seed}.sh")
