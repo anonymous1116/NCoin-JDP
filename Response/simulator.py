@@ -42,8 +42,12 @@ class Priors:
         # Call the appropriate prior function based on the task
         if self.task == 'OU':
             return self.OU()
+        elif self.task == 'CIR':
+            return self.CIR()
         elif self.task == 'OU_summary':
             return self.OU()
+        elif self.task == 'CIR_summary':
+            return self.CIR()
         elif self.task == 'MROUJ':
             return self.MROUJ()
         elif self.task == 'MROUJ_summary':
@@ -51,6 +55,9 @@ class Priors:
         
     def OU(self):
         return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
+    
+    def CIR(self):
+            return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
 
     def MROUJ(self):
             return BoxUniform(low=torch.tensor([0.1, -1, 0.1, 0.01, 0.1]), high=torch.tensor([3, 1, 1.5, 1, 1.5]))
