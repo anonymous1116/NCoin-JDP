@@ -24,6 +24,11 @@ def get_task_parameters(task):
                  "n": int(501),
                  "delta": 1/12
                 },
+                "CIR_summary": {"x0_list": x0_list if x0_list else [],  
+                 "limits": [[1, 5], [1, 2.5], [0.5, 2.0]],
+                 "n": int(501),
+                 "delta": 1/12
+                },
                 "MROUJ_summary": {"x0_list": x0_list if x0_list else [],  
                  "limits": [[0.1, 3], [-1.0, 1.0], [0.1, 1.5], [0.01, 1], [0.1, 1.5]],
                  "n": int(500),
