@@ -65,10 +65,12 @@ class Simulators:
     def __call__(self, theta):
         if self.task == "OU":
             return self.OU(theta)
-        if self.task == "CIR":
+        elif self.task == "CIR":
             return self.CIR(theta)
         elif self.task =="OU_summary":
             return self.OU_summary(self.OU(theta))
+        elif self.task =="CIR_summary":
+            return self.CIR_summary(self.CIR(theta))
         elif self.task =="MROUJ":
             return self.MROUJ(theta)
         elif self.task =="MROUJ_summary":
