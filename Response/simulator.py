@@ -166,6 +166,32 @@ class Simulators:
 
         return torch.stack((S1, S2, S3, S4, S5), dim=1)
 
+    def CIR_summary(self, X):
+        """
+        X: torch size: [L,n]
+        """
+        
+        X0 = X[:,:-1]
+        X1 = X[:,1:]
+        
+        s0 = torch.mean(X0, 1, keepdim=True) # mean of x_{i-1}
+        s1 = torch.mean(X1, 1, keepdim=True) # mean of x_i
+        
+        s2 = torch.mean((X0 - s0) * (X1 - s1),1,keepdim=True)
+        s3 = torch.mean((X0 - s0)**2,1, keepdim=True)
+        s4 = torch.mean((X1 - s1)**2,1, keepdim=True)
+        
+        s5 = torch.mean(1/ X0, 1, keepdim=True)
+        s6 = torch.mean(X1/ X0, 1, keepdim=True)
+        s7 = torch.mean(X1 ** 2/ X0, 1, keepdim=True)
+        s8 = torch.log(torch.max(X0, 1e-10*torch.ones(1)))
+        s8 = torch.mean(s8, 1, keepdim=True)
+        
+        s9 = torch.mean((X0 - s0)**2 * (X1 - s1), 1, keepdim=True)
+        s10 = torch.mean((X0 - s0) * (X1 - s1)**2, 1, keepdim=True)
+        s11 = torch.mean((X0 - s0)**2 * (X1 - s1)**2, 1, keepdim=True)
+        return(torch.column_stack((s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11)) ) 
+
     def MROUJ_summary(self, X):
         """
         X: torch size: [L,n]
