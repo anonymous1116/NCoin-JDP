@@ -48,7 +48,7 @@ def main(args):
     else:
         print(f"Directory '{output_dir}' already exists.")
     
-    if args.task == "MROUJ" or args.task == "OU":
+    if args.task == "MROUJ" or args.task == "OU" or args.task == "CIR":
         net = GRU_net(input_dim = 1, hidden_dim = Hs, output_dim = D_out)
     else:
         net = FL_Net(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
