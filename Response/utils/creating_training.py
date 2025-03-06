@@ -20,9 +20,6 @@ def create_training_job_script(experiment, task, num_training, N_EPOCHS, seed, l
 #SBATCH --output=output_log/{experiment}/{task}/output_log_{seed}%A.log
 #SBATCH --error=output_log/{experiment}/{task}/error_log_{seed}%A.txt
 
-# Create the output_log directory if it doesn't exist
-mkdir -p output_log/{experiment}/{task}
-
 # Load the required Python environment
 module load conda
 conda activate NABC
@@ -30,6 +27,9 @@ conda activate NABC
 # Change to the directory where the job was submitted from
 SLURM_SUBMIT_DIR=$(pwd)
 cd $SLURM_SUBMIT_DIR
+
+# Create the output_log directory if it doesn't exist
+mkdir -p output_log/{experiment}/{task}
 
 # Run the Python script for the current simulation
 echo "Running training for task task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len} calibrate = {calibrate_flag} num_calibrations = {num_calibrations}"
