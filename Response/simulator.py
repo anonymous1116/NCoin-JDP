@@ -63,15 +63,17 @@ class Simulators:
         self.delta = delta
 
     def __call__(self, theta):
-            if self.task == "OU":
-                return self.OU(theta)
-            elif self.task =="OU_summary":
-                return self.OU_summary(self.OU(theta))
-            elif self.task =="MROUJ":
-                return self.MROUJ(theta)
-            elif self.task =="MROUJ_summary":
-                return self.MROUJ_summary(self.MROUJ(theta))
-            
+        if self.task == "OU":
+            return self.OU(theta)
+        if self.task == "CIR":
+            return self.CIR(theta)
+        elif self.task =="OU_summary":
+            return self.OU_summary(self.OU(theta))
+        elif self.task =="MROUJ":
+            return self.MROUJ(theta)
+        elif self.task =="MROUJ_summary":
+            return self.MROUJ_summary(self.MROUJ(theta))
+        
     def OU(self, theta):
         L_OU = theta.size(0)
         time_OU = np.arange(0,self.n+1)/self.n * self.n * self.delta
@@ -87,6 +89,33 @@ class Simulators:
             path_OU[:,l+1] = z0
         return(path_OU)
     
+
+    def CIR(self, theta):
+        L_CIR = theta.size(0)
+        time_CIR = np.arange(0,self.n+1)/self.n * self.n * self.delta
+
+        a, b, sigma = theta[:,0], theta[:, 1], theta[:, 2]
+        z0 = torch.ones(L_CIR)
+        path_OU = torch.zeros(L_CIR, time_CIR.size)
+        path_OU[:,0] = z0
+        
+        path = torch.zeros(L_CIR, time_CIR.size)
+        path[:,0] = z0
+        
+        nu0 = 4 * a * b / sigma ** 2
+        nu0 = nu0.numpy()
+        
+        for l in range(time_CIR.size-1):
+            del_L = time_CIR[l+1] - time_CIR[l]
+            c0 = 4 * a / sigma ** 2 / (1- torch.exp(-a * del_L))
+            lambda0 = c0 * z0 * torch.exp(-a * del_L)
+            lambda0 = lambda0.numpy()
+            tmp = np.random.noncentral_chisquare(nu0, lambda0)
+            tmp = torch.from_numpy(tmp)
+            z0 = tmp/c0
+            path[:,l+1] = z0
+        return(path)
+
     def MROUJ(self, theta):
         obtime  = np.arange(0,self.n+1)/self.n * self.n * self.delta
         kappa, beta, sigma, lamb, mu = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4]

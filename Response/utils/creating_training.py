@@ -64,8 +64,8 @@ def create_training_cMAD_job_script(experiment, task, num_training, N_EPOCHS, se
 mkdir -p output_log/{experiment}/{task}
 
 # Load the required Python environment
-module use /depot/wangxiao/etc/modules
-module load conda-env/sbi_pack-py3.11.7
+module load conda
+conda activate NABC
 
 # Change to the directory where the job was submitted from
 SLURM_SUBMIT_DIR=$(pwd)

@@ -6,7 +6,7 @@
 #SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1           # Create a job array with indices from 1 to 10
+#SBATCH --array=1-10           # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -14,8 +14,8 @@
 mkdir -p output_log
 
 # Load the required Python environment
-module use /depot/wangxiao/etc/modules
-module load conda-env/sbi_pack-py3.11.7
+module load conda
+conda activate NABC
 
 # Change to the directory where the job was submitted from
 SLURM_SUBMIT_DIR=/home/hyun18/NCoin-JDP/Response
@@ -29,7 +29,7 @@ seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
 TASK="MROUJ"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
 N_EPOCHS=200
-layer_len=256
+layer_len=128
 num_training=100000
 #num_calibrations=100000000
 #num_calibrations=1000000000
