@@ -35,11 +35,11 @@ num_training=100000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_SA3.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P0"
-python training_SA3.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P1"
-python training_SA3.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P2"
-python training_SA3.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P3"
-python training_SA3.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P4"
+python training_SA3.py --experiment "SA3" --seed $seeds --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P0"
+python training_SA3.py --experiment "SA3" --seed $seeds --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P1"
+python training_SA3.py --experiment "SA3" --seed $seeds --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P2"
+python training_SA3.py --experiment "SA3" --seed $seeds --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P3"
+python training_SA3.py --experiment "SA3" --seed $seeds --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P4"
 
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"

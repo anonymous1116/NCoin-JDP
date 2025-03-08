@@ -7,8 +7,8 @@ from module import FL_Net, GRU_net
 from sbi.utils import BoxUniform
 
 import time
-from NCoinJDP import NCoinJDP_train, ABC_rej
-from simulator import Simulators, Priors, get_task_parameters
+from NCoinJDP import NCoinJDP_train
+from simulator import Simulators, truncated_normal
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
@@ -20,6 +20,9 @@ def main(args):
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)   
 
+    n = 3000
+    delta = 1/52
+    
     # Initialize the Priors and Simulators classes
     if args.priors == "P1":
         ub = 6
@@ -32,14 +35,23 @@ def main(args):
     else:
         ub = 5
     priors = BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([ub, 2.5, 2]))
-    
-    #task_params = get_task_parameters(args.task)
-    n = 3000
-    delta = 1/52
-    
     # Sample theta from the prior
     theta = priors.sample((args.num_training,))
 
+
+    if args.priors == "P5":
+        theta[:,0] = truncated_normal((args.num_training,), mean = 3, std = 2, lower = 1, upper = 5)
+    elif args.priors == "P6":
+        theta[:,0] = truncated_normal((args.num_training,), mean = 1.5, std = 2, lower = 1, upper = 5)
+    elif args.priors == "P7":
+        theta[:,0] = truncated_normal((args.num_training,), mean = 4.5, std = 2, lower = 1, upper = 5)
+    
+
+
+
+
+    
+    
     # Run the simulator
     simulators = Simulators(args.task, n = n, delta = delta)
     X = simulators(theta)
