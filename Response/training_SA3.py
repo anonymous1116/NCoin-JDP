@@ -38,7 +38,7 @@ def main(args):
     delta = 1/52
     
     # Sample theta from the prior
-    theta = priors().sample((args.num_training,))
+    theta = priors.sample((args.num_training,))
 
     # Run the simulator
     simulators = Simulators(args.task, n = n, delta = delta)
