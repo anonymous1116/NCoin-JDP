@@ -46,11 +46,6 @@ def main(args):
     elif args.priors == "P7":
         theta[:,0] = truncated_normal((args.num_training,), mean = 4.5, std = 2, lower = 1, upper = 5)
     
-
-
-
-
-    
     
     # Run the simulator
     simulators = Simulators(args.task, n = n, delta = delta)
