@@ -97,7 +97,7 @@ def get_args():
                         help = "See number (default: 1)")
     parser.add_argument("--layer_len", type = int, default = 256,
                         help = "layer length of FL network (default: 256)")
-    parser.add_argument("--priors", type = int, default = "P0",
+    parser.add_argument("--priors", type = str, default = "P0",
                         help = "priors")
     return parser.parse_args()
 
