@@ -40,7 +40,7 @@ class GRU_net(nn.Module):
         """
         super(GRU_net, self).__init__()
         self.gru = nn.GRU(input_dim, hidden_dim, batch_first=True)
-        self.fc = nn.Linear(hidden_dim, output_dim)  # Map hidden state to final output78
+        self.fc = nn.Linear(hidden_dim, output_dim)  # Map hidden state to final output
 
     def forward(self, x):
         """

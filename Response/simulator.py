@@ -19,6 +19,7 @@ def get_task_parameters(task):
         tmp = torch.load(file_path)
         
         x0_list = tmp[0].numpy().tolist()
+
     task_params = {"OU_summary": {"x0_list": x0_list if x0_list else [],  
                  "limits": [[1, 5], [1, 2.5], [0.5, 2.0]],
                  "n": int(501),
@@ -62,10 +63,10 @@ class Priors:
         return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
     
     def CIR(self):
-            return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
+        return BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([5, 2.5, 2]))
 
     def MROUJ(self):
-            return BoxUniform(low=torch.tensor([0.1, -1, 0.1, 0.01, 0.1]), high=torch.tensor([3, 1, 1.5, 1, 1.5]))
+        return BoxUniform(low=torch.tensor([0.1, -1, 0.1, 0.01, 0.1]), high=torch.tensor([3, 1, 1.5, 1, 1.5]))
 
 
 class Simulators:

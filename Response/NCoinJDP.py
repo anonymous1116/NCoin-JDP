@@ -161,7 +161,6 @@ def cond_mad_train(X, resid, net_var, device = "cpu", p_train = 0.7, N_EPOCHS = 
     
     return NCoinJDP_train(X, resid, net_var, device, p_train, N_EPOCHS, lr, val_batch = val_batch)
 
-
 def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Move all tensors to the target device at once
     x0 = x0.to(device)
@@ -183,7 +182,6 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     
     # Select points within tolerance and return to CPU if needed
     return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
-
 
 class WeightDecayScheduler:
     def __init__(self, optimizer, initial_weight_decay, factor, patience):
@@ -210,7 +208,6 @@ class WeightDecayScheduler:
                 print(f"Epoch {epoch}: Reduced weight decay to {param_group['weight_decay']:.6e}")
         else:
             self.epochs_since_last_update += 1
-
 
 def learning_checking(X, Y, net, num = 10000, name = None):
     net = net.to("cpu")
