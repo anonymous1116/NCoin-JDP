@@ -82,7 +82,6 @@ def main(args):
     print("## cMAD training job script submitted ##")
 
     
-
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")
     parser.add_argument('--experiment', type=str, default='SA1', 
