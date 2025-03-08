@@ -29,7 +29,8 @@ def main(args):
         ub = 8
     elif args.priors == "P4":
         ub = 9
-        
+    else:
+        ub = 5
     priors = BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([ub, 2.5, 2]))
     
     #task_params = get_task_parameters(args.task)
