@@ -286,3 +286,4 @@ def RMSE(results, true):
     tmp = 0
     for i in range(p):
         tmp += torch.sum(torch.square(results[:,i] - true[i] ))/sim
+    return torch.sqrt(tmp).detach().cpu().numpy().tolist()
