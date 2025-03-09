@@ -251,3 +251,28 @@ def learning_checking(X, Y, net, num = 10000, name = None):
         axes[i].grid(color='gray', linestyle='dashed')
         axes[i].set_ylim([lim0, lim1])
         axes[i].set_xlim([lim0, lim1])
+
+def MLE_OU(sim_OU, obtime_OU, delta_OU):
+    """
+    sim_OU size : sim * n_OU
+    """
+    sim_num = sim_OU.size()[0]
+    n_OU = len(obtime_OU)
+    n0_OU = n_OU -1
+    vec_xi = sim_OU[:, 1:]
+    vec_xim1 = sim_OU[:, :n0_OU]
+    beta1 = (torch.sum(vec_xi * vec_xim1,1) - 1/n0_OU * torch.sum(vec_xi, 1) * torch.sum(vec_xim1, 1) ) / (torch.sum(vec_xim1 ** 2, 1) - 1/n0_OU * (torch.sum(vec_xim1, 1))**2   ) # size : sim
+    beta2 = 1/n0_OU * (  torch.sum(vec_xi,1) - beta1 * torch.sum(vec_xim1,1) ) / (torch.ones(sim_num)-beta1) # size: sim
+
+    tmp1 = beta1.repeat(n_OU-1, 1) # sim *n_OU
+    tmp1 = torch.transpose(tmp1, 0,1)
+    tmp2 = beta2 * (torch.ones(sim_num)-beta1)
+    tmp3 = tmp2.repeat(n_OU-1, 1)
+    tmp3 = torch.transpose(tmp3, 0,1)
+    tmp_beta3 = (vec_xi - tmp1 * vec_xim1 - tmp3) # size: sim * n_OU
+    beta3 = 1/n0_OU * torch.sum(tmp_beta3**2, 1)
+    mu = -torch.ones(sim_num) * torch.log(beta1) / delta_OU
+    alpha = beta2
+    sigma = torch.sqrt(2 * mu * beta3 / (torch.ones(sim_num) - beta1 ** 2 ))
+
+    return(torch.stack((mu, alpha,sigma ** 2), 1))
