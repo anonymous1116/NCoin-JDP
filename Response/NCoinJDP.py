@@ -276,3 +276,13 @@ def MLE_OU(sim_OU, obtime_OU, delta_OU):
     sigma = torch.sqrt(2 * mu * beta3 / (torch.ones(sim_num) - beta1 ** 2 ))
 
     return(torch.stack((mu, alpha,sigma ** 2), 1))
+
+def RMSE(results, true):
+    # results: tensor with 2 dimensions
+    # array or list
+    sim = results.size()[0]
+    p = results.size()[1]
+    
+    tmp = 0
+    for i in range(p):
+        tmp += torch.sum(torch.square(results[:,i] - true[i] ))/sim
