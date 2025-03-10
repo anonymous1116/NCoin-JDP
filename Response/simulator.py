@@ -148,7 +148,7 @@ class Simulators:
         obtime = np.arange(0,self.n+1)/self.n * self.n * self.delta
 
         L_tmp = theta.size()[0]
-        #z0 = torch.zeros(L_tmp)
+        z0 = torch.zeros(L_tmp)
         path = torch.zeros(L_tmp, obtime.size)
         
         for l in range(len(obtime)-1):
