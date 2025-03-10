@@ -10,7 +10,7 @@ import matplotlib.pyplot as plt
 from torch.optim import Adam
 from torch.utils.data import DataLoader, TensorDataset
 
-def NCoinJDP_train(X, Y, net_str, device="cpu", p_train=0.7, N_EPOCHS=250, lr=1e-3, val_batch = 10_000, early_stop_patience = 20):
+def NCoinJDP_train(X, Y, net_str, device="cpu", p_train=0.7, N_EPOCHS=250, lr=1e-3, val_batch = 10_000, early_stop_patience = 20, l2 = "False"):
     torch.set_default_device(device)
     X = X.to(device)
     Y = Y.to(device)
@@ -47,8 +47,12 @@ def NCoinJDP_train(X, Y, net_str, device="cpu", p_train=0.7, N_EPOCHS=250, lr=1e
         torch.quantile(Y_train, .01, 0).detach().cpu().numpy(),
         torch.quantile(Y_train, .99, 0).detach().cpu().numpy()
     ]
+    
     weight_1 = torch.tensor(1/(out_range[1] - out_range[0])**2)
     
+    if l2 == "True":
+        weight_1 = torch.tensor(len(out_range[1]))
+        
     #optimizer = torch.optim.Adam(net.parameters(), lr=lr, weight_decay=weight_decay)
     optimizer = optim.Adam(net.parameters(), lr=lr, weight_decay = 1e-5)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=10, min_lr=1e-9)
