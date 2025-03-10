@@ -81,12 +81,17 @@ class Simulators:
             return self.OU(theta)
         elif self.task == "CIR":
             return self.CIR(theta)
+        elif self.task == "PBJD":
+            return self.PBJD(theta)
+        elif self.task =="MROUJ":
+            return self.MROUJ(theta)
+
         elif self.task =="OU_summary":
             return self.OU_summary(self.OU(theta))
         elif self.task =="CIR_summary":
             return self.CIR_summary(self.CIR(theta))
-        elif self.task =="MROUJ":
-            return self.MROUJ(theta)
+        elif self.task =="PBJD_summary":
+            return self.PBJD_summary(self.PBJD(theta))
         elif self.task =="MROUJ_summary":
             return self.MROUJ_summary(self.MROUJ(theta))
         
@@ -105,7 +110,6 @@ class Simulators:
             path_OU[:,l+1] = z0
         return(path_OU)
     
-
     def CIR(self, theta):
         L_CIR = theta.size(0)
         time_CIR = np.arange(0,self.n+1)/self.n * self.n * self.delta
@@ -129,6 +133,57 @@ class Simulators:
             tmp = np.random.noncentral_chisquare(nu0, lambda0)
             tmp = torch.from_numpy(tmp)
             z0 = tmp/c0
+            path[:,l+1] = z0
+        return(path)
+
+    def PBJD(self, theta):
+        """
+        This function generates a one sample path between an interval for 
+        process
+        dX_t = muX_tdt + sigma dB_t + J_1t + J_2t 
+        m : num of slice of each interval
+        """
+        
+        beta, sigma, lamb_p, lamb_n, eta_p, eta_n = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4], theta[:,5]
+        obtime = np.arange(0,self.n+1)/self.n * self.n * self.delta
+
+        L_tmp = theta.size()[0]
+        #z0 = torch.zeros(L_tmp)
+        path = torch.zeros(L_tmp, obtime.size)
+        
+        for l in range(len(obtime)-1):
+            # X, Y generating
+            del_x = obtime[l+1] - obtime[l]
+
+            ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
+                
+            # jump to positive
+            ran_num2 = torch.zeros(L_tmp)
+            tmp = torch.poisson( torch.ones(L_tmp) * lamb_p * del_x)
+            for i in range(int(torch.max(tmp))+1):
+                if (i > 0) and (tmp == i).sum() > 0:
+                    eta_tmp = eta_p[tmp ==i]
+                    eta_tmp = eta_tmp.repeat(i, 1)
+                    tmp3 = torch.log(Pareto(torch.tensor([1.0]), eta_tmp).sample())
+                    tmp3 = torch.sum(tmp3, 0)
+                    ran_num2[tmp == i] = tmp3
+            ran_num2 = torch.min(ran_num2, torch.ones(L_tmp) * 1000)
+                
+            # jump to negative
+            ran_num3 = torch.zeros(L_tmp)
+            tmp = torch.poisson( torch.ones(L_tmp) * lamb_n * del_x)
+            for i in range(int(torch.max(tmp))+1):
+                if (i > 0) and (tmp == i).sum() > 0:
+                    eta_tmp = eta_n[tmp ==i]
+                    eta_tmp = eta_tmp.repeat(i, 1)
+                    tmp3 = torch.log(Beta(eta_tmp, torch.tensor([1.0])).sample())
+                    tmp3 = torch.sum(tmp3, 0)
+                    ran_num3[tmp == i] = tmp3
+            ran_num3 = torch.max(ran_num3, -torch.ones(L_tmp) * 1000)
+            
+            z0 = z0 + (beta - sigma ** 2/ 2) * del_x + sigma * ran_num * del_x ** (1/2) + ran_num2 + ran_num3
+            #z0 = z0 + (beta) * del_x + sigma * ran_num * del_x ** (1/2) + ran_num2 + ran_num3
+            
             path[:,l+1] = z0
         return(path)
 
@@ -207,6 +262,66 @@ class Simulators:
         s10 = torch.mean((X0 - s0) * (X1 - s1)**2, 1, keepdim=True)
         s11 = torch.mean((X0 - s0)**2 * (X1 - s1)**2, 1, keepdim=True)
         return(torch.column_stack((s0, s1, s2, s3, s4, s5, s6, s7, s8, s9, s10, s11)) ) 
+
+    def PBJD_summary(self, X):
+        """
+        X: torch size: [L,n]
+        """
+        delta = self.delta
+        L0 = X.size()[0]
+        n0 = X.size()[1]
+        
+        Xi = X[:,range(1,n0)]
+        Xi1 = X[:,range(0,n0-1)]
+        
+        # mean
+        s0 = torch.sum((Xi - Xi1), 1) / (delta* (n0-1))
+        s1 = torch.mean(torch.abs(Xi - Xi1), 1) / n0
+        s2 = torch.mean((Xi - Xi1)**2 , 1) / n0
+        s3 = torch.mean((Xi - Xi1)**3 , 1) / n0 
+        s4 = torch.mean((Xi - Xi1)**4 , 1) / n0 ** 2
+        
+        tmp = (Xi - Xi1 - torch.reshape(s0, (L0, 1)) * delta) ** 2/delta
+        
+        # sigma
+        s5 = torch.mean(tmp, 1)/n0
+        
+        # Jump intensity
+        tmp = (Xi - Xi1)
+        
+        thres = [1e-7 * 3, 1e-7 * 6, 1e-7 * 9, 
+                1e-6 * 3, 1e-6 * 6, 1e-6 * 9, 
+                1e-5 * 3, 1e-5 * 6, 1e-5 * 9, 
+                1e-4 * 3, 1e-4 * 6, 1e-4 * 9, 
+                1e-3 * 3, 1e-3 * 6, 1e-3 * 9,
+                1e-2 * 3, 1e-2 * 6, 1e-2 * 9]
+        thres_tmp = []
+        for i in range(len(thres)):
+            temp = torch.sum( (tmp > thres[i] ), 1) /n0
+            thres_tmp.append(temp)
+        
+        j_int1 = torch.column_stack(thres_tmp)
+        
+        thres_tmp2 = []
+        for i in range(len(thres)):
+            temp = torch.sum( (tmp < -thres[i] ), 1) /n0
+            thres_tmp2.append(temp)
+        
+        j_int2 = torch.column_stack(thres_tmp2)
+        
+        # Jump magnitude
+        tmp = Xi - Xi1
+        num = 33
+        q = []
+        for i in range(num+1):
+            q.append(i/num)
+        
+        q = torch.tensor(q)
+        mag_q = torch.transpose(torch.quantile(tmp, q, 1), 0, 1)
+        
+        return(torch.column_stack((s0, s1, s2, s3, s4, s5, 
+                                j_int1, j_int2, mag_q)) ) 
+
 
     def MROUJ_summary(self, X):
         """
