@@ -4,8 +4,7 @@ import argparse
 import os
 import subprocess
 from module import FL_Net, GRU_net
-from sbi.utils import BoxUniform
-from torch.distributions import Uniform, Exponential
+from torch.distributions import Exponential
 
 import time
 from NCoinJDP import NCoinJDP_train
@@ -36,7 +35,7 @@ def main(args):
     # Training + validation + Test data generating
     torch.manual_seed(510)
 
-    L = args.training
+    L = args.num_training
     beta_ran  = torch.rand(L) * (beta_range[1] - beta_range[0]) + beta_range[0]
     sigma_ran = Exponential(sigma_param[0] * torch.ones(L)).sample()
 
