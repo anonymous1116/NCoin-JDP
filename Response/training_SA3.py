@@ -25,13 +25,13 @@ def main(args):
     
     # Initialize the Priors and Simulators classes
     if args.priors == "P1":
-        ub = 6
+        ub = 5.5
     elif args.priors == "P2":
-        ub = 7
+        ub = 6
     elif args.priors == "P3":
-        ub = 8
+        ub = 6.5
     elif args.priors == "P4":
-        ub = 9
+        ub = 7
     else:
         ub = 5
     priors = BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([ub, 2.5, 2]))
@@ -45,7 +45,6 @@ def main(args):
         theta[:,0] = truncated_normal((args.num_training,), mean = 2, std = 3, lower = 1, upper = 5)
     elif args.priors == "P7":
         theta[:,0] = truncated_normal((args.num_training,), mean = 4, std = 3, lower = 1, upper = 5)
-    
     elif args.priors == "P8":
         theta[:,0] = truncated_normal((args.num_training,), mean = 3, std = 3, lower = 0.5, upper = 6.5)
     elif args.priors == "P9":
@@ -60,11 +59,6 @@ def main(args):
     elif args.priors == "P13":
         theta[:,0] = truncated_normal((args.num_training,), mean = 4, std = 4, lower = 0.5, upper = 6.5)
     
-
-
-
-    
-    
     # Run the simulator
     simulators = Simulators(args.task, n = n, delta = delta)
     X = simulators(theta)
@@ -75,7 +69,7 @@ def main(args):
     # Save the models
     ## Define the output directory
     print(f"start", flush=True)
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/{args.priors}"
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.training/1000)}/{args.priors}"
     
     #output_dir = "../depot_hyun/NABC_nets_RAdam/" + args.task
     ## Create the directory if it doesn't exist
