@@ -69,14 +69,18 @@ def main(args):
         del sigma_ran
         sigma_ran = Exponential(20.0 * torch.ones(L)).sample()
     
-    theta = torch.stack((beta_ran, torch.log(sigma_ran), torch.log(lamb_p_ran), torch.log(lamb_n_ran), 
-                                    torch.log(eta_p_ran), torch.log(eta_n_ran)), dim = 1)
+    theta_raw = torch.stack((beta_ran, sigma_ran, lamb_p_ran, lamb_n_ran, 
+                                    eta_p_ran, eta_n_ran), dim = 1)
     
 
     # Run the simulator
     simulators = Simulators(args.task, n = n, delta = delta)
-    X_raw = simulators(theta)
+    X_raw = simulators(theta_raw)
     
+    theta_transform = torch.stack((beta_ran, torch.log(sigma_ran), torch.log(lamb_p_ran), torch.log(lamb_n_ran), 
+                                    torch.log(eta_p_ran), torch.log(eta_n_ran)), dim = 1)
+    
+
     a = torch.quantile(X_raw, .001, 0)
     a = torch.reshape(a, (1, a.size()[0]))
     b = torch.quantile(X_raw, .999, 0)
@@ -85,7 +89,7 @@ def main(args):
     X = torch.clone((X_raw - a) / (b - a))
 
     # Learning hyperparameters
-    D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
+    D_in, D_out, Hs = X.size(1), theta_transform.size(1), args.layer_len
 
     # Save the models
     ## Define the output directory
@@ -109,7 +113,7 @@ def main(args):
     print(f"start training for mean function", flush=True)
     start_time = time.time()  # Start timer
     val_batch = 1_000 if args.task == "OU" else 10_000
-    tmp, best_error = NCoinJDP_train(X, theta, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
+    tmp, best_error = NCoinJDP_train(X, theta_transform, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
     print(f"Mean Function Training completed in {elapsed_time/60:.2f} mins")
