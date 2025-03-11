@@ -69,7 +69,7 @@ def main(args):
     # Save the models
     ## Define the output directory
     print(f"start", flush=True)
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.training/1000)}/{args.priors}"
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}"
     
     #output_dir = "../depot_hyun/NABC_nets_RAdam/" + args.task
     ## Create the directory if it doesn't exist
