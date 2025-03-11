@@ -45,6 +45,7 @@ def main(args):
         theta[:,0] = truncated_normal((args.num_training,), mean = 2, std = 3, lower = 1, upper = 5)
     elif args.priors == "P7":
         theta[:,0] = truncated_normal((args.num_training,), mean = 4, std = 3, lower = 1, upper = 5)
+        
     elif args.priors == "P8":
         theta[:,0] = truncated_normal((args.num_training,), mean = 3, std = 3, lower = 0.5, upper = 6.5)
     elif args.priors == "P9":

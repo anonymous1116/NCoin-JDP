@@ -87,7 +87,7 @@ def main(args):
     b = torch.reshape(b, (1, b.size()[0]))
 
     X = torch.clone((X_raw - a) / (b - a))
-
+    
     # Learning hyperparameters
     D_in, D_out, Hs = X.size(1), theta_transform.size(1), args.layer_len
 
