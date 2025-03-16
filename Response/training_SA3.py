@@ -89,7 +89,8 @@ def main(args):
     print(f"start training for mean function", flush=True)
     start_time = time.time()  # Start timer
     val_batch = 1_000 if args.task == "OU" else 10_000
-    tmp, best_error = NCoinJDP_train(X, theta, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
+    l2 = "True" if args.experiment == "SA3_80" or args.experiment == "SA3_l2" else "False"
+    tmp, best_error = NCoinJDP_train(X, theta, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = l2)
     end_time = time.time()
     elapsed_time = end_time - start_time  # Calculate elapsed time
     print(f"Mean Function Training completed in {elapsed_time/60:.2f} mins")
