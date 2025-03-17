@@ -41,10 +41,11 @@ echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $
 #python training_SA4.py --experiment "SA4" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1_4"
 #python training_SA4.py --experiment "SA4" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1_5"
 #python training_SA4.py --experiment "SA4" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1_6"
-python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P5"
-python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P6"
-python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P7"
-python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P8"
-python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P9"
+python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P10"
+python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P11"
+python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P12"
+python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P13"
+python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P14"
+
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
