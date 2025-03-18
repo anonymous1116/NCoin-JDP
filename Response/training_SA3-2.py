@@ -18,13 +18,13 @@ def main(args):
     torch.set_default_device("cpu")
     torch.manual_seed(args.seed)
     np.random.seed(args.seed)   
-
+    n = 3000
+    delta = 1/52
+    
     test_save_name = '../../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
     test_data= torch.load(test_save_name)[0]
     my_test=test_data[0]
 
-    n = 3000
-    delta = 1/52
     simulators = Simulators(args.task, n = n, delta = delta)
     
     # Initialize the Priors and Simulators classes
