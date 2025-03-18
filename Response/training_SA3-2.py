@@ -43,14 +43,6 @@ def main(args):
 
     
     print(f"start", flush=True)
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}"
-    
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-        print(f"Directory '{output_dir}' created.")
-    else:
-        print(f"Directory '{output_dir}' already exists.")
-
     
     X = simulators(theta)
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
@@ -90,6 +82,8 @@ def main(args):
 
         torch.save(net(x0).detach(), f"{output_dir}/local_{args.seed}.pt")
         del X_new, theta_new, priors_new, net
+        torch.set_default_device("cpu")
+    
     
     
 def get_args():
