@@ -56,17 +56,29 @@ def main(args):
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
 
     for j in range(4):
+        output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}/C{j}"
+    
+        if not os.path.exists(output_dir):
+            os.makedirs(output_dir)
+            print(f"Directory '{output_dir}' created.")
+        else:
+            print(f"Directory '{output_dir}' already exists.")
+
         x0 = my_test[j][args.seed]
         x0 = torch.reshape(x0, (1, x0.size(0)))
         x0 = simulators.OU_summary(x0)
 
         tol = .1
+        print(f"ABC_rej start", flush=True)
+    
         tmp = ABC_rej(x0, X, theta, tol = tol, device = device)
     
         priors_new = BoxUniform(low=torch.tensor(torch.min(tmp[1],0).values.tolist()), high=torch.tensor(torch.max(tmp[1],0).values.tolist()))
         theta_new = priors_new.sample((100_000,))
         X_new = simulators(theta_new)
 
+        print(f"training start", flush=True)
+    
         net = FL_Net(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
         val_batch = 10000
         tmp, _ = NCoinJDP_train(X_new, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
@@ -74,7 +86,9 @@ def main(args):
         net.eval()
         net.to("cpu")
 
-        torch.save(net(x0).detach(), f"{output_dir}/C{j}/local_{args.seed}.pt")
+        print(f"saving", flush=True)
+
+        torch.save(net(x0).detach(), f"{output_dir}/local_{args.seed}.pt")
         del X_new, theta_new, priors_new, net
     
     
