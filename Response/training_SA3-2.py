@@ -22,7 +22,7 @@ def main(args):
     delta = 1/52
     
     test_save_name = '../../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
-    test_data= torch.load(test_save_name)[0]
+    test_data= torch.load(test_save_name)
     my_test=test_data[0]
 
     simulators = Simulators(args.task, n = n, delta = delta)
