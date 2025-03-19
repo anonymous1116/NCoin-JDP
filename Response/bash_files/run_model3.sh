@@ -6,7 +6,7 @@
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1-20            # Create a job array with indices from 1 to 10
+#SBATCH --array=1-30            # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -35,10 +35,9 @@ num_training=400000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-##python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P0"
 python training_SA3-2.py --experiment "SA3-2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1"
 python training_SA3-2.py --experiment "SA3-2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P2"
-#python Response/training_SA3-2.py --experiment "SA3-2" --seed 1 --task "OU_summary" --layer_len 128 --num_training 400000 --N_EPOCHS 200 --priors "P1"
-#python training_SA3-2.py --experiment "SA3-2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1"
+python training_SA3-2.py --experiment "SA3-2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P3"
+python training_SA3-2.py --experiment "SA3-2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P4"
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"

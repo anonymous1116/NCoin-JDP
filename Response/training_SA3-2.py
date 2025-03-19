@@ -60,7 +60,7 @@ def main(args):
         x0 = torch.reshape(x0, (1, x0.size(0)))
         x0 = simulators.OU_summary(x0)
 
-        tol = .1
+        tol = .05
         print(f"ABC_rej start", flush=True)
     
         tmp = ABC_rej(x0, X, theta, tol = tol, device = device)
@@ -83,7 +83,6 @@ def main(args):
         torch.save(net(x0).detach(), f"{output_dir}/local_{args.seed}.pt")
         del X_new, theta_new, priors_new, net
         torch.set_default_device("cpu")
-    
     
     
 def get_args():
