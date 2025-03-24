@@ -23,7 +23,15 @@ def main(args):
     n = 2015
     delta = 1
     
-    
+    beta_range = [-0.01, 0.02]
+    sigma_param = [100]
+
+    lamb_p_param = [1]
+    lamb_n_param = [1]
+
+    eta_p_param = [100]
+    eta_n_param = [100]
+
     # Training + validation + Test data generating
     torch.manual_seed(510)
 
