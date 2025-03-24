@@ -28,7 +28,7 @@ def main(args):
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
     param = [[-0.01, 0.02], [100], [1], [1], [100], [100]]
-    trunc = [[-0.01, 0.02], None, None, None, None, None]
+    trunc = [None, None, None, None, None, None]
 
     # Initialize the Priors and Simulators classes
     if args.priors == "P1_0":
