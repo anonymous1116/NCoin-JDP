@@ -7,7 +7,7 @@ from module import FL_Net2
 from sbi.utils import BoxUniform
 
 from NCoinJDP import NCoinJDP_train, ABC_rej
-from simulator import Simulators, PBJD_truncated_priors
+from simulator import Simulators, PBJD_truncated_priors, PBJD_X_log_transform
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
@@ -69,10 +69,7 @@ def main(args):
     
     trunc = []
     for j in range(6):
-        if j > 0:
-            temp = np.exp(np.array([torch.min(tmp[1],0).values.tolist(),torch.max(tmp[1],0).values.tolist()])[:,j]).tolist()
-        else: 
-            temp = np.array([torch.min(tmp[1],0).values.tolist(),torch.max(tmp[1],0).values.tolist()])[:,j].tolist()
+        temp = np.array([torch.min(tmp[1],0).values.tolist(),torch.max(tmp[1],0).values.tolist()])[:,j].tolist()
         trunc.append(temp)
 
     
@@ -82,16 +79,25 @@ def main(args):
     X_new = simulators(theta_new)
     print(f"X_new generated", flush=True)
     
+    X_transform = PBJD_X_log_transform(X_new)
+    a = torch.quantile(X_transform, .001, 0)
+    a = torch.reshape(a, (1, a.size()[0]))
+    b = torch.quantile(X_transform, .999, 0)
+    b = torch.reshape(b, (1, b.size()[0]))
+
+    X_transform = torch.clone((X_transform - a) / (b - a))    
+    x0 = torch.clone((x0 - a) / (b - a))
+
     print(f"training start", flush=True)
     net = FL_Net2(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
     val_batch = 10000
-    tmp, _ = NCoinJDP_train(X_new, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
+    tmp, _ = NCoinJDP_train(X_transform, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
     net.load_state_dict(tmp)
     net.eval()
     net.to("cpu")
 
     print(f"saving", flush=True)
-    torch.save(net(x0).detach(), f"{output_dir}/local_{args.seed}.pt")
+    torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
     
     

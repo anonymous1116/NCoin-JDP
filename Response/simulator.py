@@ -474,3 +474,17 @@ def PBJD_truncated_priors(L, param, trunc):
     ), dim=1)
 
     return theta_transform
+
+def PBJD_X_log_transform(tmp):
+    transformed = torch.cat([
+        tmp[:, [0]],             # Keep column 0 (shape: (L, 1))
+        torch.log(tmp[:, 1:])    # Exponentiate columns 1 to 5 (shape: (L, 5))
+    ], dim=1)
+    return transformed
+
+def PBJD_X_exp_transform(tmp):
+    transformed = torch.cat([
+        tmp[:, [0]],             # Keep column 0 (shape: (L, 1))
+        torch.exp(tmp[:, 1:])    # Exponentiate columns 1 to 5 (shape: (L, 5))
+    ], dim=1)
+    return transformed
