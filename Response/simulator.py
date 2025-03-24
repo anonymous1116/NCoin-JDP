@@ -466,11 +466,11 @@ def PBJD_truncated_priors(L, param, trunc):
     # Stack and transform
     theta_transform = torch.stack((
         b_ran,
-        torch.log(s_ran),
-        torch.log(lp_ran),
-        torch.log(ln_ran),
-        torch.log(ep_ran),
-        torch.log(en_ran)
+        s_ran,
+        lp_ran,
+        ln_ran,
+        ep_ran,
+        en_ran
     ), dim=1)
 
     return theta_transform
