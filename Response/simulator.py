@@ -136,16 +136,45 @@ class Simulators:
             path[:,l+1] = z0
         return(path)
 
-    def PBJD(self, theta):
+    def PBJD(self, theta, batch_size=500000):
+        """
+        Efficient PBJD simulator for large L by splitting into mini-batches.
+
+        Args:
+            theta (Tensor): shape (L, 6)
+            batch_size (int): number of samples per batch (default: 10000)
+
+        Returns:
+            path (Tensor): shape (L, T) where T = self.n + 1
+        """
+        L_total = theta.shape[0]
+        all_paths = []
+
+        for start in range(0, L_total, batch_size):
+            end = min(start + batch_size, L_total)
+            theta_batch = theta[start:end]
+
+            # Simulate one batch and append
+            path_batch = self.PBJD_simulate_batch(theta_batch)
+            all_paths.append(path_batch)
+
+        # Concatenate all batches
+        return torch.cat(all_paths, dim=0)
+    
+    def PBJD_simulate_batch(self, theta):
         """
         This function generates a one sample path between an interval for 
         process
         dX_t = muX_tdt + sigma dB_t + J_1t + J_2t 
         m : num of slice of each interval
         """
-        
+        device = torch.device("cuda:0") 
+        torch.set_default_device(device)
+        theta.to(device)
+        n = n.self
+        delta = delta.self
         beta, sigma, lamb_p, lamb_n, eta_p, eta_n = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4], theta[:,5]
-        obtime = np.arange(0,self.n+1)/self.n * self.n * self.delta
+        obtime = np.arange(0,n+1)/n * n * delta
 
         L_tmp = theta.size()[0]
         z0 = torch.zeros(L_tmp)
@@ -158,34 +187,34 @@ class Simulators:
             ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
                 
             # jump to positive
-            ran_num2 = torch.zeros(L_tmp)
-            tmp = torch.poisson( torch.ones(L_tmp) * lamb_p * del_x)
-            for i in range(int(torch.max(tmp))+1):
-                if (i > 0) and (tmp == i).sum() > 0:
-                    eta_tmp = eta_p[tmp ==i]
-                    eta_tmp = eta_tmp.repeat(i, 1)
-                    tmp3 = torch.log(Pareto(torch.tensor([1.0]), eta_tmp).sample())
-                    tmp3 = torch.sum(tmp3, 0)
-                    ran_num2[tmp == i] = tmp3
-            ran_num2 = torch.min(ran_num2, torch.ones(L_tmp) * 1000)
-                
-            # jump to negative
-            ran_num3 = torch.zeros(L_tmp)
-            tmp = torch.poisson( torch.ones(L_tmp) * lamb_n * del_x)
-            for i in range(int(torch.max(tmp))+1):
-                if (i > 0) and (tmp == i).sum() > 0:
-                    eta_tmp = eta_n[tmp ==i]
-                    eta_tmp = eta_tmp.repeat(i, 1)
-                    tmp3 = torch.log(Beta(eta_tmp, torch.tensor([1.0])).sample())
-                    tmp3 = torch.sum(tmp3, 0)
-                    ran_num3[tmp == i] = tmp3
-            ran_num3 = torch.max(ran_num3, -torch.ones(L_tmp) * 1000)
+            N = torch.poisson( torch.ones(L_tmp) * lamb_p * del_x)
             
-            z0 = z0 + (beta - sigma ** 2/ 2) * del_x + sigma * ran_num * del_x ** (1/2) + ran_num2 + ran_num3
-            #z0 = z0 + (beta) * del_x + sigma * ran_num * del_x ** (1/2) + ran_num2 + ran_num3
+            gamma = torch.distributions.Gamma(N.clamp(min=1), eta_p)
+            J = gamma.sample()
+
+            # Set J = 0 where N == 0
+            J[N == 0] = 0.0
+            
+            J = J.clamp(max=1000)
+            
+            del N
+            
+            # jump to negative
+            N = torch.poisson(torch.ones(L_tmp) * lamb_n * del_x)
+            gamma = torch.distributions.Gamma(N.clamp(min=1), eta_n)
+            J2 = gamma.sample()
+            
+            # Set J = 0 where N == 0
+            J2[N == 0] = 0.0
+            
+            J2 = J2.clamp(max = 1000)
+            
+            z0 = z0 + (beta - sigma ** 2/ 2) * del_x + sigma * ran_num * del_x ** (1/2) + J - J2
             
             path[:,l+1] = z0
-        return(path)
+        torch.set_default_device("cpu")
+        return(path.to("cpu"))
+
 
     def MROUJ(self, theta):
         obtime  = np.arange(0,self.n+1)/self.n * self.n * self.delta
