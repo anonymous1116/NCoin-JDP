@@ -391,13 +391,6 @@ def truncated_normal(shape, mean=0.0, std=1.0, lower=-0.5, upper=0.5):
     """
     Generates samples from a truncated normal distribution in O(1) time using inverse CDF method.
     
-    Parameters:
-    - shape (tuple): Output shape of the tensor.
-    - mean (float): Mean of the normal distribution.
-    - std (float): Standard deviation of the normal distribution.
-    - lower (float): Lower truncation bound.
-    - upper (float): Upper truncation bound.
-
     Returns:
     - Tensor of shape `shape` with samples from the truncated normal distribution.
     """
@@ -412,3 +405,72 @@ def truncated_normal(shape, mean=0.0, std=1.0, lower=-0.5, upper=0.5):
     truncated_samples = mean + std * torch.erfinv(2 * uniform_samples - 1) * math.sqrt(2)
 
     return truncated_samples
+
+import torch
+import math
+
+def truncated_exponential(shape, rate=1.0, lower=0.0, upper=1.0):
+    """
+    Generates samples from a truncated exponential distribution using the inverse CDF method.
+
+    Parameters:
+    - shape (tuple): Output shape of the tensor.
+    - rate (float): Rate parameter (λ) of the exponential distribution.
+    - lower (float): Lower truncation bound (≥ 0).
+    - upper (float): Upper truncation bound (> lower).
+
+    Returns:
+    - Tensor of shape `shape` with samples from the truncated exponential distribution.
+    """
+    if lower < 0 or upper <= lower:
+        raise ValueError("Invalid truncation bounds. Ensure 0 <= lower < upper.")
+
+    # Compute CDF values at truncation bounds
+    lower_cdf = 1 - math.exp(-rate * lower)
+    upper_cdf = 1 - math.exp(-rate * upper)
+
+    # Sample uniformly between CDF bounds
+    uniform_samples = torch.rand(shape, dtype=torch.float32) * (upper_cdf - lower_cdf) + lower_cdf
+
+    # Apply inverse CDF (quantile function) of exponential distribution
+    truncated_samples = -torch.log(1 - uniform_samples) / rate
+
+    return truncated_samples
+
+
+def PBJD_truncated_priors(L, param, trunc):
+    
+    def fallback(trunc_val, default_val):
+        return trunc_val if trunc_val is not None else default_val
+
+    # Unpack parameters and truncation ranges
+    beta_range, sigma_param, lamb_p_param, lamb_n_param, eta_p_param, eta_n_param = param
+    b_range, s_range, lp_range, ln_range, ep_range, en_range = trunc
+
+    # Apply defaults if None
+    b_range  = fallback(b_range, beta_range)
+    s_range  = fallback(s_range, [0.0, float('inf')])
+    lp_range = fallback(lp_range, [0.0, float('inf')])
+    ln_range = fallback(ln_range, [0.0, float('inf')])
+    ep_range = fallback(ep_range, [0.0, float('inf')])
+    en_range = fallback(en_range, [0.0, float('inf')])
+
+    # Sample from priors
+    b_ran  = torch.rand(L) * (b_range[1] - b_range[0]) + b_range[0]
+    s_ran  = truncated_exponential((L,), rate=sigma_param[0],   lower=s_range[0],  upper=s_range[1])
+    lp_ran = truncated_exponential((L,), rate=lamb_p_param[0], lower=lp_range[0], upper=lp_range[1])
+    ln_ran = truncated_exponential((L,), rate=lamb_n_param[0], lower=ln_range[0], upper=ln_range[1])
+    ep_ran = truncated_exponential((L,), rate=eta_p_param[0],  lower=ep_range[0], upper=ep_range[1])
+    en_ran = truncated_exponential((L,), rate=eta_n_param[0],  lower=en_range[0], upper=en_range[1])
+
+    # Stack and transform
+    theta_transform = torch.stack((
+        b_ran,
+        torch.log(s_ran),
+        torch.log(lp_ran),
+        torch.log(ln_ran),
+        torch.log(ep_ran),
+        torch.log(en_ran)
+    ), dim=1)
+
+    return theta_transform

@@ -23,15 +23,7 @@ def main(args):
     n = 2015
     delta = 1
     
-    beta_range = [-0.01, 0.02]
-    sigma_param = [100]
-
-    lamb_p_param = [1]
-    lamb_n_param = [1]
-
-    eta_p_param = [100]
-    eta_n_param = [100]
-
+    
     # Training + validation + Test data generating
     torch.manual_seed(510)
 
@@ -46,6 +38,11 @@ def main(args):
     eta_n_ran = Exponential(eta_n_param[0] * torch.ones(L)).sample()
 
     
+    theta_raw = torch.stack((beta_ran, sigma_ran, lamb_p_ran, lamb_n_ran, eta_p_ran, eta_n_ran), dim = 1)
+    theta_transform = torch.stack((beta_ran, torch.log(sigma_ran), torch.log(lamb_p_ran), torch.log(lamb_n_ran), 
+                                    torch.log(eta_p_ran), torch.log(eta_n_ran)), dim = 1)
+        
+
     # Initialize the Priors and Simulators classes
     if args.priors == "P1_1":
         del beta_ran
@@ -69,8 +66,7 @@ def main(args):
         del sigma_ran
         sigma_ran = Exponential(20.0 * torch.ones(L)).sample()
     
-    theta_raw = torch.stack((beta_ran, sigma_ran, lamb_p_ran, lamb_n_ran, 
-                                    eta_p_ran, eta_n_ran), dim = 1)
+    theta_raw = torch.stack((beta_ran, sigma_ran, lamb_p_ran, lamb_n_ran, eta_p_ran, eta_n_ran), dim = 1)
     
 
     # Run the simulator

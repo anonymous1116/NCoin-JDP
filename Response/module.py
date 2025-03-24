@@ -27,6 +27,28 @@ class FL_Net(nn.Module):
         x = F.relu(self.bn3(self.fc3(x)))
         x = self.fc4(x)
         return x
+class FL_Net2(nn.Module):
+    def __init__(self, D_in, D_out,H = 128, H2 = 128, H3 = 128, device="cuda"):
+        super().__init__()
+        self.device = device
+        
+        self.fc1 = nn.Linear(D_in, H)
+        self.bn1 = nn.BatchNorm1d(num_features=H)
+        
+        self.fc2 = nn.Linear(H, H2)
+        self.bn2 = nn.BatchNorm1d(num_features=H2)
+        
+        self.fc3 = nn.Linear(H2, H3)
+        self.bn3 = nn.BatchNorm1d(num_features=H3)
+        
+        self.fc4 = nn.Linear(H3, D_out)
+
+    def forward(self, x):
+        x = F.relu(self.bn1(self.fc1(x)))
+        x = F.relu(self.bn2(self.fc2(x)))
+        x = F.relu(self.bn3(self.fc3(x)))
+        x = self.fc4(x)
+        return x
     
 
 class GRU_net(nn.Module):
