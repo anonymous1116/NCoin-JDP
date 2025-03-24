@@ -171,8 +171,8 @@ class Simulators:
         device = torch.device("cuda:0") 
         torch.set_default_device(device)
         theta.to(device)
-        n = n.self
-        delta = delta.self
+        n = self.n
+        delta = self.delta
         beta, sigma, lamb_p, lamb_n, eta_p, eta_n = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4], theta[:,5]
         obtime = np.arange(0,n+1)/n * n * delta
 
