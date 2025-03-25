@@ -171,7 +171,7 @@ class Simulators:
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
         torch.set_default_device(device)
-        theta.to(device)
+        theta = theta.to(device)
         n = self.n
         delta = self.delta
         beta, sigma, lamb_p, lamb_n, eta_p, eta_n = theta[:,0], theta[:,1], theta[:,2], theta[:,3], theta[:,4], theta[:,5]
@@ -189,8 +189,7 @@ class Simulators:
             ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
                 
             # jump to positive
-            tmp = lamb_p * del_x
-            N = torch.poisson(tmp.to(device))
+            N = torch.poisson(lamb_p * del_x)
             
             gamma = torch.distributions.Gamma(N.clamp(min=1), eta_p)
             J = gamma.sample()
