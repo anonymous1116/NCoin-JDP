@@ -188,9 +188,7 @@ class Simulators:
             ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
                 
             # jump to positive
-            print(lamb_p)
-            print(del_x)
-            tmp = torch.ones(L_tmp) * lamb_p * del_x
+            tmp = lamb_p * del_x
             N = torch.poisson(tmp.to(device))
             
             gamma = torch.distributions.Gamma(N.clamp(min=1), eta_p)
@@ -204,7 +202,7 @@ class Simulators:
             del N
             
             # jump to negative
-            N = torch.poisson(torch.ones(L_tmp) * lamb_n * del_x)
+            N = torch.poisson(lamb_n * del_x)
             gamma = torch.distributions.Gamma(N.clamp(min=1), eta_n)
             J2 = gamma.sample()
             
@@ -438,9 +436,6 @@ def truncated_normal(shape, mean=0.0, std=1.0, lower=-0.5, upper=0.5):
     truncated_samples = mean + std * torch.erfinv(2 * uniform_samples - 1) * math.sqrt(2)
 
     return truncated_samples
-
-import torch
-import math
 
 def truncated_exponential(shape, rate=1.0, lower=0.0, upper=1.0):
     """
