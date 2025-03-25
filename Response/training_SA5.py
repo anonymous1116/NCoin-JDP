@@ -7,7 +7,7 @@ from module import FL_Net2
 from sbi.utils import BoxUniform
 
 from NCoinJDP import NCoinJDP_train, ABC_rej
-from simulator import Simulators, PBJD_truncated_priors, PBJD_X_log_transform
+from simulator import Simulators, PBJD_truncated_priors, PBJD_theta_log_transform
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
@@ -81,19 +81,19 @@ def main(args):
     X_new = simulators(theta_new)
     print(f"X_new generated", flush=True)
     
-    X_transform = PBJD_X_log_transform(X_new)
-    a = torch.quantile(X_transform, .001, 0)
+    theta_transform = PBJD_theta_log_transform(theta_new)
+    a = torch.quantile(X_new, .001, 0)
     a = torch.reshape(a, (1, a.size()[0]))
-    b = torch.quantile(X_transform, .999, 0)
+    b = torch.quantile(X_new, .999, 0)
     b = torch.reshape(b, (1, b.size()[0]))
 
-    X_transform = torch.clone((X_transform - a) / (b - a))    
+    X_new = torch.clone((X_new - a) / (b - a))    
     x0 = torch.clone((x0 - a) / (b - a))
 
     print(f"training start", flush=True)
     net = FL_Net2(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
     val_batch = 10000
-    tmp, _ = NCoinJDP_train(X_transform, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
+    tmp, _ = NCoinJDP_train(X_new, theta_transform, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
     net.load_state_dict(tmp)
     net.eval()
     net.to("cpu")
