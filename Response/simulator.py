@@ -462,7 +462,7 @@ def truncated_exponential(shape, rate=1.0, lower=0.0, upper=1.0):
     # Apply inverse CDF (quantile function) of exponential distribution
     truncated_samples = -torch.log(1 - uniform_samples) / rate
 
-    return truncated_samples
+    return truncated_samples.clamp(min=1e-15)
 
 
 def PBJD_truncated_priors(L, param, trunc):
