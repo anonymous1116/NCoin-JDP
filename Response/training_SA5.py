@@ -24,6 +24,8 @@ def main(args):
     test_save_name = 'Robustness/rda_data.pt'
     test_data= torch.load(test_save_name)
     x0=test_data[args.x0_ind]
+    x0 = x0.type(torch.float32)
+
 
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
