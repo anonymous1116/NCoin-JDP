@@ -182,7 +182,6 @@ class Simulators:
         path = torch.zeros(L_tmp, obtime.size)
         
         for l in range(len(obtime)-1):
-            print(l)
             # X, Y generating
             del_x = obtime[l+1] - obtime[l]
 
