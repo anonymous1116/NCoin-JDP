@@ -28,10 +28,10 @@ seed_START=1
 # Get the current N_EPOCHS value based on the job array index
 seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
-#TASK="PBJD_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
-#N_EPOCHS=200
-#layer_len=512
-#num_training=800000
+TASK="PBJD_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
+N_EPOCHS=200
+layer_len=512
+num_training=500000
 
 # Run the Python script with the specified N_EPOCHS value
 #echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
@@ -47,6 +47,5 @@ seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 #python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P13"
 #python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P14"
 
-python training_SA5.py --experiment "SA5" --seed 1 --task "PBJD_summary" --layer_len 512 --num_training 50000 --N_EPOCHS 10 --priors "P1_0"
-
+python training_SA5.py --experiment "SA5" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1_0"
 #echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
