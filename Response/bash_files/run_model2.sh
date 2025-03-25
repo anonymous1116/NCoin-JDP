@@ -47,6 +47,6 @@ seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 #python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P13"
 #python training_SA3.py --experiment "SA3_80" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P14"
 
-python training_SA5.py --experiment "SA5" --seed 1 --task "PBJD_summary" --layer_len 512 --num_training 50000 --N_EPOCHS 10 --priors "P1_0"
+python Response/training_SA5.py --experiment "SA5" --seed 1 --task "PBJD_summary" --layer_len 512 --num_training 50000 --N_EPOCHS 10 --priors "P1_0"
 
 #echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"

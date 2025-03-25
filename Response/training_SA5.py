@@ -21,7 +21,7 @@ def main(args):
     n = 2014
     delta = 1
     
-    test_save_name = 'Response/Robustness/rda_data.pt'
+    test_save_name = 'Robustness/rda_data.pt'
     test_data= torch.load(test_save_name)
     x0=test_data[args.x0_ind]
 
