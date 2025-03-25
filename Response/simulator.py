@@ -168,7 +168,8 @@ class Simulators:
         dX_t = muX_tdt + sigma dB_t + J_1t + J_2t 
         m : num of slice of each interval
         """
-        device = torch.device("cuda:0") 
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+
         torch.set_default_device(device)
         theta.to(device)
         n = self.n
@@ -187,6 +188,8 @@ class Simulators:
             ran_num = torch.normal(0 * torch.ones(L_tmp), torch.ones(L_tmp))
                 
             # jump to positive
+            print(lamb_p)
+            print(del_x)
             tmp = torch.ones(L_tmp) * lamb_p * del_x
             N = torch.poisson(tmp.to(device))
             
