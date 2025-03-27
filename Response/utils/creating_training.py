@@ -73,7 +73,7 @@ cd $SLURM_SUBMIT_DIR
 
 # Run the Python script for the current simulation
 echo "Running training for task task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len}"
-python training_cMAD_SA.py --experiment {experiment} --task {task} --num_training {num_training} --N_EPOCHS {N_EPOCHS} --seed {seed} --layer_len {layer_len} 
+python training_SA3.py --experiment {experiment} --task {task} --num_training {num_training} --N_EPOCHS {N_EPOCHS} --seed {seed} --layer_len {layer_len} 
 echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len}"
 """
     # Create the directory for SLURM files if it doesn't exist
