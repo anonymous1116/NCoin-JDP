@@ -29,7 +29,7 @@ def main(args):
 
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
-    param = [[-0.01, 0.02], [100], [1], [1], [100], [100]]
+    param = [[-0.01, 0.02], [100], [1], [1], [1/100], [1/100]]
     trunc = [None, None, None, None, None, None]
 
     # Initialize the Priors and Simulators classes

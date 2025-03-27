@@ -213,7 +213,7 @@ class WeightDecayScheduler:
         else:
             self.epochs_since_last_update += 1
 
-def learning_checking(X, Y, net, num = 10000, name = None):
+def learning_checking(X, Y, net, num = 10000, zoom = .0001,name = None):
     net = net.to("cpu")
     X = X.to("cpu")
     Y = Y.to("cpu")
@@ -236,8 +236,8 @@ def learning_checking(X, Y, net, num = 10000, name = None):
         tmp = tmp.detach().cpu().numpy()
 
     ## Plot for model checking
-    lim_left = torch.quantile(Y_test,.0001, 0).detach().cpu().numpy()
-    lim_right = torch.quantile(Y_test,.9999, 0).detach().cpu().numpy()
+    lim_left = torch.quantile(Y_test,zoom, 0).detach().cpu().numpy()
+    lim_right = torch.quantile(Y_test,1.0-zoom, 0).detach().cpu().numpy()
 
     fig, axes = plt.subplots(1, len(tmp[0]), figsize=(20,3))
     fig.suptitle('Learning Checking', fontsize= 10)
