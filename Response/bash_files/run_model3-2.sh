@@ -31,7 +31,7 @@ seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 TASK="OU_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
 N_EPOCHS=200
 layer_len=768
-num_training=800000
+num_training=600000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
