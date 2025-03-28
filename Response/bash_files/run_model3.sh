@@ -1,7 +1,7 @@
 #!/bin/bash
 
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=8
 #SBATCH --time=04:00:00
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
