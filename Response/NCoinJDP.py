@@ -187,6 +187,101 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Select points within tolerance and return to CPU if needed
     return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
 
+def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", case = None, chunk_size = 10_000):
+    mad = compute_mad(X_cal)
+    mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
+    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/mad**2, 1))
+
+    X_cal, x0, dist = X_cal.cpu(), x0.cpu(), dist.cpu()
+    net, net_var = net.to("cpu"), net_var.to("cpu")
+    
+    sort_dist, _ = torch.sort(dist)
+    
+    num = X_cal.size(0)
+    #dim_output = y_cal.size(1)
+
+    # new index
+    nacc = int(num * tol)
+    ds = sort_dist[nacc-1]
+    wt1 = (dist <= ds)
+
+    # weights
+    h = 1/ torch.log(torch.sum(wt1)) #** (1/dim_output)
+    weights = torch.exp(-dist[wt1]/ds/h)
+    
+    # thetahat
+    with torch.no_grad():
+        net.eval()
+        thetahat = net(x0)
+        if bounds is not None:
+            thetahat = torch.clamp(thetahat, torch.tensor(bounds)[:,0] ,torch.tensor(bounds)[:,1])
+
+    # Get samples
+    net_cond = net_var.to(device)
+    net = net.to(device)
+    y_cal = torch.clone(y_cal[wt1,:])
+    X_cal = torch.clone(X_cal[wt1,:])
+    
+    chunk_size = chunk_size  # Adjust this based on your GPU memory
+    num_chunks = X_cal.size(0) // chunk_size
+
+    resid_tmp = []
+    sd_X = []
+
+    with torch.no_grad():
+        for i in range(num_chunks + 1):
+            net.eval()
+            net_cond.eval()
+            start = i * chunk_size
+            end = (i + 1) * chunk_size if (i + 1) * chunk_size < X_cal.size(0) else X_cal.size(0)
+            
+            X_chunk = X_cal[start:end].to(device)
+            y_chunk = y_cal[start:end].to(device)
+            y_chunk_predict = net(X_chunk)
+            bounds_tensor = torch.tensor(bounds).to(device)
+            if bounds is not None:
+                y_chunk_predict = torch.clamp(y_chunk_predict, bounds_tensor[:,0] ,bounds_tensor[:,1]) 
+            resid_chunk = y_chunk - y_chunk_predict
+            sd_X_chunk = torch.exp(net_cond(X_chunk))
+            
+            resid_tmp.append(resid_chunk.cpu())  # Move back to CPU to free GPU memory
+            sd_X.append(sd_X_chunk.cpu())
+    
+        sd_x0 = torch.exp(net_cond(x0.to(device))).cpu()
+    
+    del X_chunk, y_chunk, resid_chunk, sd_X_chunk
+    # Clear cached memory
+    torch.cuda.empty_cache()
+    
+    # Concatenate chunks
+    resid_tmp = torch.cat(resid_tmp, dim=0)
+    sd_X = torch.cat(sd_X, dim=0)
+    adj = thetahat + resid_tmp * sd_x0 / sd_X
+    
+    weights_tmp = np.copy(weights.detach().cpu().numpy())
+    P = weights_tmp / weights_tmp.sum()
+
+    vec = adj.numpy()
+    sam_ind = np.random.choice(np.arange(0, adj.size(0)), adj.size(0), replace = True, p = P)
+    sample_post_large = torch.tensor(vec[sam_ind,:])
+    del P, sam_ind
+    
+    if bounds is not None:
+        assert len(bounds) == y_cal.size(1), "The dimension of bounds is not equal to the number of parameter space"
+        wt2 = []
+        for j in range(len(bounds)):
+            tmp = ((sample_post_large[:,j] < bounds[j][1]) & (sample_post_large[:,j] > bounds[j][0]))
+            wt2.append(tmp)
+        wt2 = torch.stack(wt2, 1)
+        wt2 = torch.all(wt2, 1)
+        sample_post_large = torch.clone(sample_post_large[wt2,:])
+    del wt2
+
+    sam_ind_post = np.random.choice(np.arange(0, sample_post_large.size()[0]), n_samples, replace = True)
+    sample_post = sample_post_large[sam_ind_post,:]
+    return sample_post, sample_post_large
+
+
 class WeightDecayScheduler:
     def __init__(self, optimizer, initial_weight_decay, factor, patience):
         """
