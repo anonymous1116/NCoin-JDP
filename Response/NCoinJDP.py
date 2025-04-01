@@ -187,7 +187,7 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Select points within tolerance and return to CPU if needed
     return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
 
-def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", case = None, chunk_size = 10_000):
+def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", chunk_size = 10_000):
     mad = compute_mad(X_cal)
     mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
     dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/mad**2, 1))
@@ -238,8 +238,8 @@ def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, boun
             X_chunk = X_cal[start:end].to(device)
             y_chunk = y_cal[start:end].to(device)
             y_chunk_predict = net(X_chunk)
-            bounds_tensor = torch.tensor(bounds).to(device)
             if bounds is not None:
+                bounds_tensor = torch.tensor(bounds).to(device)
                 y_chunk_predict = torch.clamp(y_chunk_predict, bounds_tensor[:,0] ,bounds_tensor[:,1]) 
             resid_chunk = y_chunk - y_chunk_predict
             sd_X_chunk = torch.exp(net_cond(X_chunk))

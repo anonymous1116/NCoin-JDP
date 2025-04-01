@@ -95,21 +95,64 @@ class Simulators:
         elif self.task =="MROUJ_summary":
             return self.MROUJ_summary(self.MROUJ(theta))
         
-    def OU(self, theta):
+    def OU(self, theta, batch_size=1_000_000):
+        n = self.n
+        delta = self.delta
+        device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+        
         L_OU = theta.size(0)
-        time_OU = np.arange(0,self.n+1)/self.n * self.n * self.delta
-        mu_OU, theta_OU, sigma2_OU = theta[:,0], theta[:, 1], theta[:, 2]
-        z0 = torch.normal(theta_OU, torch.sqrt(sigma2_OU/(2*mu_OU)))
-        path_OU = torch.zeros(L_OU, time_OU.size)
-        path_OU[:,0] = z0
-        for l in range(time_OU.size-1):
-            del_L = time_OU[l+1] - time_OU[l]
-            OU_mean = z0 * torch.exp(-mu_OU * del_L) + theta_OU * (1- torch.exp(-mu_OU * del_L))
-            OU_sd = torch.sqrt( sigma2_OU/(2*mu_OU) * (1- torch.exp(-2 * mu_OU * del_L)) )
-            z0 = torch.normal(OU_mean, OU_sd)
-            path_OU[:,l+1] = z0
-        return(path_OU)
+        time_OU = torch.linspace(0, n * delta, n + 1)  # (n+1) time steps
+
+        mu_OU, theta_OU, sigma2_OU = theta[:, 0], theta[:, 1], theta[:, 2]
+
+        # Initialize an empty list to store CPU results
+        path_OU_list = []
+
+        # Process in batches to avoid memory overload
+        for start in range(0, L_OU, batch_size):
+            end = min(start + batch_size, L_OU)
+            
+            # Process batch
+            mu_batch = mu_OU[start:end].to(device)
+            theta_batch = theta_OU[start:end].to(device)
+            sigma2_batch = sigma2_OU[start:end].to(device)
+
+            # Compute standard deviation for initial state
+            std_init = torch.sqrt(sigma2_batch / (2 * mu_batch))
+
+            # Initialize batch paths (Allocate **directly on CPU**)
+            path_batch = torch.empty((end - start, n + 1), dtype=torch.float32, device="cpu")
+
+            # Initialize first value of the path
+            z0 = torch.normal(theta_batch, std_init)
+            path_batch[:, 0] = z0.cpu()  # Store on CPU
+            
+            del std_init  # Free GPU memory
+            torch.cuda.empty_cache()
+
+            # Compute time step difference once
+            del_L = time_OU[1] - time_OU[0]
+            exp_neg_mu_del = torch.exp(-mu_batch * del_L)
+            sqrt_term = torch.sqrt(sigma2_batch / (2 * mu_batch) * (1 - exp_neg_mu_del**2))
+            # Compute the rest of the path
+            for l in range(1, n + 1):
+                OU_mean = z0 * exp_neg_mu_del + theta_batch * (1 - exp_neg_mu_del)
+                z0 = torch.normal(OU_mean, sqrt_term)  # Update recursively
+                
+                # Store result **directly** in preallocated CPU tensor
+                path_batch[:, l] = z0.cpu()
+
+            # Store batch results
+            path_OU_list.append(path_batch)
+
+            # Free GPU memory
+            del mu_batch, theta_batch, sigma2_batch, exp_neg_mu_del, sqrt_term, z0, path_batch
+            torch.cuda.empty_cache()
     
+            
+        # Concatenate all batches on CPU
+        return torch.row_stack(path_OU_list)
+        
     def CIR(self, theta):
         L_CIR = theta.size(0)
         time_CIR = np.arange(0,self.n+1)/self.n * self.n * self.delta
