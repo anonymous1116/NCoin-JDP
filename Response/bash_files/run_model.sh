@@ -5,7 +5,7 @@
 #SBATCH --time=00:30:00
 #SBATCH --account=debug
 #SBATCH --gpus-per-node=1
-#SBATCH --nodes=1-10
+#SBATCH --nodes=1
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -23,18 +23,17 @@ cd $SLURM_SUBMIT_DIR
 # Get the current N_EPOCHS value based on the job array index
 seeds=1
 
-TASK="OU_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
+TASK="MROUJ_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
 N_EPOCHS=200
-layer_len=128
+layer_len=256
 num_training=100000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python utils/creating_training.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P0"
-python utils/creating_training.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P1"
-python utils/creating_training.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P2"
-python utils/creating_training.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P3"
-python utils/creating_training.py --experiment "SA3" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS --priors "P4"
-
+python utils/creating_training.py --experiment "SA" --task $TASK --layer_len $layer_len --num_training 50000 --N_EPOCHS $N_EPOCHS 
+#python utils/creating_training.py --experiment "SA" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS 
+#python utils/creating_training.py --experiment "SA" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS 
+#python utils/creating_training.py --experiment "SA" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS 
+#python utils/creating_training.py --experiment "SA" --task $TASK --layer_len $layer_len --num_training 100000 --N_EPOCHS $N_EPOCHS 
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"

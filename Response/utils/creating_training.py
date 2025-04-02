@@ -33,7 +33,7 @@ mkdir -p output_log/{experiment}/{task}
 
 # Run the Python script for the current simulation
 echo "Running training for task task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len} calibrate = {calibrate_flag} num_calibrations = {num_calibrations}"
-python training_SA2.py --experiment {experiment} --task {task} --num_training {num_training} --N_EPOCHS {N_EPOCHS} --seed {seed} --layer_len {layer_len} {calibrate_flag} --num_calibrations {num_calibrations} --iter_calibrations {iter_calibrations} {c2st_flag}
+python training_SA.py --experiment {experiment} --task {task} --num_training {num_training} --N_EPOCHS {N_EPOCHS} --seed {seed} --layer_len {layer_len} {calibrate_flag} --num_calibrations {num_calibrations} --iter_calibrations {iter_calibrations} {c2st_flag}
 echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCHS: {N_EPOCHS} seed: {seed} layer_len={layer_len} calibrate = {calibrate_flag} num_calibrations = {num_calibrations}"
 """
     # Create the directory for SLURM files if it doesn't exist
@@ -88,7 +88,6 @@ echo "Training completed task: '{task}', 'num_training: {num_training}', N_EPOCH
     # Submit the job immediately
     subprocess.run(['sbatch', job_file_path])
     print(f"Job {job_file_path} submitted.")
-
 
 
 def main(args):
