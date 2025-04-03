@@ -7,7 +7,7 @@ from module import FL_Net2
 from sbi.utils import BoxUniform
 
 from NCoinJDP import NCoinJDP_train, ABC_rej
-from simulator import Simulators, PBJD_theta_exp_transform, PBJD_theta_log_transform, PBJD_truncated_priors2
+from simulator import Simulators, PBJD_theta_exp_transform, PBJD_theta_log_transform, PBJD_truncated_priors2, learning_checking_save
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
@@ -57,14 +57,13 @@ def main(args):
     
     X_new, theta_new = ABC_rej(x0, X, theta, tol = tol, device = device)
     
-    
     theta_transform = PBJD_theta_log_transform(theta_new)
     a = torch.quantile(X_new, .001, 0)
     a = torch.reshape(a, (1, a.size()[0]))
     b = torch.quantile(X_new, .999, 0)
     b = torch.reshape(b, (1, b.size()[0]))
 
-    X_new = torch.clone((X_new - a) / (b - a))    
+    X_new = torch.clone((X_new - a) / (b - a))
     x0 = torch.clone((x0 - a) / (b - a))
 
     print(f"training start", flush=True)
@@ -77,8 +76,8 @@ def main(args):
 
     print(f"saving", flush=True)
     torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
+    learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_local_{args.seed}.pdf")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
-    
     
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")

@@ -66,7 +66,7 @@ def main(args):
 
     print(f"saving", flush=True)
     torch.save([PBJD_theta_exp_transform(net(x0).detach()),a,b], f"{output_dir}/mean_{args.seed}.pt")
-    learning_checking_save(X_new, theta_transform, net, name = f"LC__{args.seed}.pdf")
+    learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_{args.seed}.pdf")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind done", flush=True)
     
 def get_args():

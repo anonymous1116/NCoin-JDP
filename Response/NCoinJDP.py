@@ -324,7 +324,6 @@ def learning_checking(X, Y, net, num = 10000, zoom = .0001):
     X_test = X[indices,:]
     Y_test = Y[indices,:]
     
-    
     with torch.no_grad():
         net.eval()
         tmp = net(X_test)
