@@ -6,7 +6,7 @@ import subprocess
 from module import FL_Net2
 from sbi.utils import BoxUniform
 
-from NCoinJDP import NCoinJDP_train, ABC_rej
+from NCoinJDP import NCoinJDP_train, ABC_rej, learning_checking_save
 from simulator import Simulators, PBJD_theta_log_transform, PBJD_theta_exp_transform, PBJD_truncated_priors2
 #from utils.batch_process import resid_chunk_process
 
@@ -66,6 +66,7 @@ def main(args):
 
     print(f"saving", flush=True)
     torch.save([PBJD_theta_exp_transform(net(x0).detach()),a,b], f"{output_dir}/mean_{args.seed}.pt")
+    learning_checking_save(X_new, theta_transform, net, name = f"LC__{args.seed}.pdf")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind done", flush=True)
     
 def get_args():
