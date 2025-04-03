@@ -21,7 +21,7 @@ def main(args):
     n = 2014
     delta = 1
     
-    test_save_name = 'Robustness/RDA_data.pt'
+    test_save_name = 'Response/Robustness/RDA_data.pt'
     x0= torch.load(test_save_name)
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
