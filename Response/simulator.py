@@ -551,14 +551,14 @@ def PBJD_truncated_priors2(L, param, trunc):
         return trunc_val if trunc_val is not None else default_val
 
     # Unpack parameters and truncation ranges
-    beta_range, sigma_param, lp_range, ln_range, eta_p_param, eta_n_param = param
+    beta_range, sigma_param, lambda_p_range, lambda_n_range, eta_p_param, eta_n_param = param
     b_range, s_range, lp_range, ln_range, ep_range, en_range = trunc
 
     # Apply defaults if None
     b_range  = fallback(b_range, beta_range)
     s_range  = fallback(s_range, [0.0, float('inf')])
-    lp_range  = fallback(lp_range, lp_range)
-    ln_range  = fallback(ln_range, ln_range)
+    lp_range  = fallback(lp_range, lambda_p_range)
+    ln_range  = fallback(ln_range, lambda_n_range)
     ep_range = fallback(ep_range, [0.0, float('inf')])
     en_range = fallback(en_range, [0.0, float('inf')])
 
