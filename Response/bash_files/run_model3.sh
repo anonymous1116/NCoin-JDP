@@ -38,3 +38,6 @@ echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $
 python training_SA2.py --experiment "SA2" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
+
+
+python training_SA6.py --experiment "SA6" --seed 1 --task "PBJD_summary" --layer_len 512 --num_training 400000 --N_EPOCHS 1
