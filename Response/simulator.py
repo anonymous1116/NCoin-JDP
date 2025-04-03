@@ -545,6 +545,44 @@ def PBJD_truncated_priors(L, param, trunc):
 
     return theta_transform
 
+def PBJD_truncated_priors2(L, param, trunc):
+    
+    def fallback(trunc_val, default_val):
+        return trunc_val if trunc_val is not None else default_val
+
+    # Unpack parameters and truncation ranges
+    beta_range, sigma_param, lp_range, ln_range, eta_p_param, eta_n_param = param
+    b_range, s_range, lp_range, ln_range, ep_range, en_range = trunc
+
+    # Apply defaults if None
+    b_range  = fallback(b_range, beta_range)
+    s_range  = fallback(s_range, [0.0, float('inf')])
+    lp_range  = fallback(lp_range, lp_range)
+    ln_range  = fallback(ln_range, ln_range)
+    ep_range = fallback(ep_range, [0.0, float('inf')])
+    en_range = fallback(en_range, [0.0, float('inf')])
+
+    # Sample from priors
+    b_ran  = torch.rand(L) * (b_range[1] - b_range[0]) + b_range[0]
+    s_ran  = truncated_exponential((L,), rate=sigma_param[0],   lower=s_range[0],  upper=s_range[1])
+    lp_ran =  torch.rand(L) * (lp_range[1] - lp_range[0]) + lp_range[0]
+    ln_ran =  torch.rand(L) * (ln_range[1] - ln_range[0]) + ln_range[0]
+    ep_ran = truncated_exponential((L,), rate=eta_p_param[0],  lower=ep_range[0], upper=ep_range[1])
+    en_ran = truncated_exponential((L,), rate=eta_n_param[0],  lower=en_range[0], upper=en_range[1])
+
+    # Stack and transform
+    theta_transform = torch.stack((
+        b_ran,
+        s_ran,
+        lp_ran,
+        ln_ran,
+        ep_ran,
+        en_ran
+    ), dim=1)
+
+    return theta_transform
+
+
 def PBJD_theta_log_transform(tmp):
     transformed = torch.cat([
         tmp[:, [0]],             # Keep column 0 (shape: (L, 1))
