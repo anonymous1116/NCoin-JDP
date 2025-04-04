@@ -95,7 +95,7 @@ class Simulators:
         elif self.task =="MROUJ_summary":
             return self.MROUJ_summary(self.MROUJ(theta))
         
-    def OU(self, theta, batch_size=1_000_000):
+    def OU(self, theta, batch_size=100_000):
         n = self.n
         delta = self.delta
         device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
