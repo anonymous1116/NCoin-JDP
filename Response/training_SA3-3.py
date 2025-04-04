@@ -21,7 +21,7 @@ def main(args):
     n = 3000
     delta = 1/52
     
-    test_save_name = '../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
+    test_save_name = '../../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
     test_data= torch.load(test_save_name)
     my_test=test_data[0]
 
@@ -71,7 +71,7 @@ def main(args):
     
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
 
-    for j in range(4):
+    for j in range(2):
         output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}/C{j}"
     
         if not os.path.exists(output_dir):
