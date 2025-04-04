@@ -39,12 +39,36 @@ def main(args):
     else:
         ub = 5
     priors = BoxUniform(low=torch.tensor([1, 1, 0.5]), high=torch.tensor([ub, 2.5, 2]))
-    theta = priors.sample((args.num_training,))
-
+    
     
     print(f"start", flush=True)
+    all_theta = []
+    all_X = []
+
+    batch_size = 100_000
+    total_samples = args.num_training
+
+    for start in range(0, total_samples, batch_size):
+        end = min(start + batch_size, total_samples)
+        current_batch_size = end - start
+
+        theta_batch = priors.sample((current_batch_size,))
+        theta_batch = theta_batch.to(device)
+
+        with torch.no_grad():
+            X_batch = simulators(theta_batch)
+
+        all_theta.append(theta_batch.cpu())
+        all_X.append(X_batch.cpu())
+
+        del theta_batch, X_batch
+        torch.cuda.empty_cache()
+
+    theta = torch.cat(all_theta, dim=0)
+    X = torch.cat(all_X, dim=0)
+
+    print(f"synthetic data generated", flush=True)
     
-    X = simulators(theta)
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
 
     for j in range(4):
