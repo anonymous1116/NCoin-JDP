@@ -21,7 +21,7 @@ def main(args):
     n = 3000
     delta = 1/52
     
-    test_save_name = '../../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
+    test_save_name = '../depot_hyun/hyun/test_data/OU_test_n'+ str(n) + '_' + "S1" +'.pt'
     test_data= torch.load(test_save_name)
     my_test=test_data[0]
 

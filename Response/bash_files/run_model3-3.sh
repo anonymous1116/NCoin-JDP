@@ -43,4 +43,4 @@ python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
 
-#python Response/training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P3"
+#python Response/training_SA3-3.py --experiment "SA3-3" --seed 1 --task "OU_summary" --layer_len 512 --num_training 2000000 --N_EPOCHS 1 --priors "P0"
