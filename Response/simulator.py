@@ -310,6 +310,49 @@ class Simulators:
 
         return torch.stack((S1, S2, S3, S4, S5), dim=1)
 
+    def OU_summary2(self, X, batch_size=50_000):
+        """
+        Computes summary statistics for an Ornstein-Uhlenbeck process in a memory-efficient way.
+
+        Parameters:
+        - X: torch.Tensor of shape [L, n]
+        - batch_size: int, number of samples to process in one batch (adjust based on available GPU memory)
+
+        Returns:
+        - torch.Tensor of shape [L, 5] containing summary statistics.
+        """
+        L, n0 = X.shape
+        device = X.device
+        results = torch.empty((L, 5), device=device)
+
+        for i in range(0, L, batch_size):
+            X_batch = X[i:i + batch_size]
+
+            # Efficient slicing
+            X_prev = X_batch[:, :-1]  # X_{i-1}
+            X_next = X_batch[:, 1:]   # X_{i}
+
+            # Compute means
+            mean_prev = X_prev.mean(dim=1)
+            mean_next = X_next.mean(dim=1)
+
+            # Compute sums in a memory-efficient way
+            sum1 = torch.sum(X_next * X_prev, dim=1, dtype=torch.float32) / n0
+            sum4 = torch.sum(X_prev**2, dim=1, dtype=torch.float32) / n0 - mean_prev**2
+            sum5 = torch.sum(X_next**2, dim=1, dtype=torch.float32) / n0 - mean_next**2
+
+            # Compute summary statistics
+            S1 = sum1 - mean_next * mean_prev
+            S2 = mean_next
+            S3 = mean_prev
+            S4 = sum4
+            S5 = sum5
+
+            results[i:i + batch_size] = torch.stack((S1, S2, S3, S4, S5), dim=1)
+
+        return results
+
+
     def CIR_summary(self, X):
         """
         X: torch size: [L,n]
