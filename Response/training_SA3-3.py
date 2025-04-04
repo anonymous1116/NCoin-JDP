@@ -97,7 +97,7 @@ def main(args):
     
         net = FL_Net(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
         val_batch = 10000
-        tmp, _ = NCoinJDP_train(X_new, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True")
+        tmp, _ = NCoinJDP_train(X_new, theta_new, net, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch, l2 = "True", early_stop_patience=30)
         net.load_state_dict(tmp)
         net.eval()
         net.to("cpu")
@@ -105,7 +105,7 @@ def main(args):
         print(f"saving", flush=True)
 
         torch.save(net(x0).detach(), f"{output_dir}/local_{args.seed}.pt")
-        del X_new, theta_new, priors_new, net
+        del X_new, theta_new, net
         torch.set_default_device("cpu")
     
     

@@ -30,7 +30,7 @@ seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
 TASK="OU_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
 N_EPOCHS=200
-layer_len=512
+layer_len=256
 num_training=1000000
 
 
