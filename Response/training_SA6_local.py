@@ -32,9 +32,36 @@ def main(args):
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]] 
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300] ]
     
+
     theta = PBJD_truncated_priors2(args.num_training, param, trunc)
     print(f"Prior generated", flush=True)
     
+    all_theta = []
+    all_X = []
+
+    batch_size = 100_000
+    total_samples = args.num_training
+
+    for start in range(0, total_samples, batch_size):
+        end = min(start + batch_size, total_samples)
+        current_batch_size = end - start
+
+        theta_batch = PBJD_truncated_priors2(current_batch_size, param, trunc)
+        theta_batch = theta_batch.to(device)
+
+        with torch.no_grad():
+            X_batch = simulators(theta_batch)
+
+        all_theta.append(theta_batch.cpu())
+        all_X.append(X_batch.cpu())
+
+        del theta_batch, X_batch
+        torch.cuda.empty_cache()
+
+    theta = torch.cat(all_theta, dim=0)
+    X = torch.cat(all_X, dim=0)
+
+
     X = simulators(theta)
     print(f"Samples generated", flush=True)
     
