@@ -6,7 +6,7 @@
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=101-300            # Create a job array with indices from 1 to 10
+#SBATCH --array=1-100            # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -36,10 +36,10 @@ num_training=1000000
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P0"
-python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1"
-python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P2"
-python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P3"
+#python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P0"
+#python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1"
+#python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P2"
+#python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P3"
 python training_SA3-3.py --experiment "SA3-3" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P4"
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
