@@ -283,75 +283,49 @@ class Simulators:
             path[:,l+1] = z0
         return(path)    
 
-    def OU_summary(self, X):
+    def OU_summary(self, X, batch_size=10000, device="cuda"):
         """
-        X: torch size: [L,n]
-        """
-        n0 = X.size()[1]
+        Compute OU summary statistics in batches to avoid OOM.
 
-        # Efficient vectorized computation
-        X_prev = X[:, :-1]  # X_{i-1}
-        X_next = X[:, 1:]   # X_{i}
-
-        sum1 = torch.sum(X_next * X_prev, dim=1)
-        sum2 = torch.sum(X_next, dim=1)
-        sum3 = torch.sum(X_prev, dim=1)
-        sum4 = torch.sum(X_prev**2, dim=1)
-        sum5 = torch.sum(X_next**2, dim=1)
-
-        n0 = X.size(1)
-
-        # Compute summary statistics
-        S1 = (sum1 - sum2 * sum3 / n0) / n0
-        S2 = sum2 / n0
-        S3 = sum3 / n0
-        S4 = sum4 / n0 - (sum3 / n0)**2
-        S5 = sum5 / n0 - (sum2 / n0)**2
-
-        return torch.stack((S1, S2, S3, S4, S5), dim=1)
-
-    def OU_summary2(self, X, batch_size=50_000):
-        """
-        Computes summary statistics for an Ornstein-Uhlenbeck process in a memory-efficient way.
-
-        Parameters:
-        - X: torch.Tensor of shape [L, n]
-        - batch_size: int, number of samples to process in one batch (adjust based on available GPU memory)
+        Args:
+            X (Tensor): shape (L, n), potentially large
+            batch_size (int): number of rows to process at a time
+            device (str): 'cuda' or 'cpu' (if CUDA memory is too limited)
 
         Returns:
-        - torch.Tensor of shape [L, 5] containing summary statistics.
+            Tensor: shape (L, 5)
         """
-        L, n0 = X.shape
-        device = X.device
-        results = torch.empty((L, 5), device=device)
+        L = X.size(0)
+        n = X.size(1)
+        summaries = []
 
-        for i in range(0, L, batch_size):
-            X_batch = X[i:i + batch_size]
+        for start in range(0, L, batch_size):
+            end = min(start + batch_size, L)
+            X_batch = X[start:end].to(device)
 
-            # Efficient slicing
-            X_prev = X_batch[:, :-1]  # X_{i-1}
-            X_next = X_batch[:, 1:]   # X_{i}
+            # Vectorized computations
+            X_prev = X_batch[:, :-1]
+            X_next = X_batch[:, 1:]
 
-            # Compute means
-            mean_prev = X_prev.mean(dim=1)
-            mean_next = X_next.mean(dim=1)
+            sum1 = torch.sum(X_next * X_prev, dim=1)
+            sum2 = torch.sum(X_next, dim=1)
+            sum3 = torch.sum(X_prev, dim=1)
+            sum4 = torch.sum(X_prev ** 2, dim=1)
+            sum5 = torch.sum(X_next ** 2, dim=1)
 
-            # Compute sums in a memory-efficient way
-            sum1 = torch.sum(X_next * X_prev, dim=1, dtype=torch.float32) / n0
-            sum4 = torch.sum(X_prev**2, dim=1, dtype=torch.float32) / n0 - mean_prev**2
-            sum5 = torch.sum(X_next**2, dim=1, dtype=torch.float32) / n0 - mean_next**2
+            S1 = (sum1 - sum2 * sum3 / n) / n
+            S2 = sum2 / n
+            S3 = sum3 / n
+            S4 = sum4 / n - (sum3 / n) ** 2
+            S5 = sum5 / n - (sum2 / n) ** 2
 
-            # Compute summary statistics
-            S1 = sum1 - mean_next * mean_prev
-            S2 = mean_next
-            S3 = mean_prev
-            S4 = sum4
-            S5 = sum5
+            summary_batch = torch.stack((S1, S2, S3, S4, S5), dim=1).to("cpu")
+            summaries.append(summary_batch)
 
-            results[i:i + batch_size] = torch.stack((S1, S2, S3, S4, S5), dim=1)
+            del X_batch, X_prev, X_next, S1, S2, S3, S4, S5, summary_batch
+            torch.cuda.empty_cache()  # optional: help reduce GPU fragmentation
 
-        return results
-
+        return torch.cat(summaries, dim=0)    
 
     def CIR_summary(self, X):
         """
