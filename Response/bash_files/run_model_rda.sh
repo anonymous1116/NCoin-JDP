@@ -2,11 +2,11 @@
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=03:00:00
-#SBATCH --account=standby
+#SBATCH --time=00:30:00
+#SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1-10            # Create a job array with indices from 1 to 10
+#SBATCH --array=0
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -22,15 +22,27 @@ conda activate NABC
 SLURM_SUBMIT_DIR=/home/hyun18/NCoin-JDP/Response
 cd $SLURM_SUBMIT_DIR
 
-# Define the starting point for seed 
-seed_START=1
 
-# Get the current N_EPOCHS value based on the job array index
-seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
-N_EPOCHS=200
+# Calculate seed and prior
+seed=$((SLURM_ARRAY_TASK_ID % 10 + 1))
+prior_index=$((SLURM_ARRAY_TASK_ID / 10))
+priors_list=("P1_0" "P1_1" "P1_2" "P1_3" "P1_4")
+prior=${priors_list[$prior_index]}
+
+N_EPOCHS=1
 layer_len=512
-num_training=2000000
+num_training=200000
 tol=.1
 # Run the Python script with the specified N_EPOCHS value
 
-python training_SA6_priors.py --experiment "SA6_priors" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --priors "P1_0"
+echo "Running with seed=$seed and prior=$prior"
+
+python training_SA6_priors.py \
+  --experiment "SA6_priors" \
+  --seed $seed \
+  --task $TASK \
+  --layer_len $layer_len \
+  --num_training $num_training \
+  --N_EPOCHS $N_EPOCHS \
+  --tol $tol \
+  --priors "$prior"

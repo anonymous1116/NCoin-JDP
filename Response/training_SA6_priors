@@ -33,6 +33,23 @@ def main(args):
 
     print(f"ABC_rej start", flush=True)
     
+    # Initialize the Priors and Simulators classes
+    if args.priors == "P1_0":
+        param[0] = [-0.01, 0.02]
+        trunc[0] = [-0.01, 0.02]
+    elif args.priors == "P1_1":
+        param[0] = [-0.01, 0.025]
+        trunc[0] = [-0.01, 0.025]
+    elif args.priors == "P1_2":
+        param[0] = [-0.015, 0.025]
+        trunc[0] = [-0.015, 0.025]
+    elif args.priors == "P1_3":
+        param[0] = [-0.015, 0.03]
+        trunc[0] = [-0.015, 0.03]
+    elif args.priors == "P1_4":
+        param[0] = [-0.020, 0.03]
+        trunc[0] = [-0.020, 0.03]
+
     all_theta = []
     all_X = []
 
@@ -64,7 +81,7 @@ def main(args):
     D_in, D_out, Hs = X_new.size(1), theta_new.size(1), args.layer_len
 
     #cases = args.priors[:,2]
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/C{args.x0_ind}"
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}"
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
