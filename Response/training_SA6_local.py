@@ -60,8 +60,6 @@ def main(args):
     theta = torch.cat(all_theta, dim=0)
     X = torch.cat(all_X, dim=0)
 
-
-    X = simulators(theta)
     print(f"Samples generated", flush=True)
     
     D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
