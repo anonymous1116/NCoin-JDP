@@ -50,6 +50,23 @@ def main(args):
         param[0] = [-0.020, 0.03]
         trunc[0] = [-0.020, 0.03]
 
+    if args.priors == "P2_0":
+        param[1] = [100]
+        trunc[1] = [1e-5, 1e-2]
+    elif args.priors == "P2_1":
+        param[1] = [75]
+        trunc[1] = [1e-5, 5e-2]
+    elif args.priors == "P2_2":
+        param[1] = [50]
+        trunc[1] = [1e-5, 1e-2]
+    elif args.priors == "P2_3":
+        param[1] = [100]
+        trunc[1] = [1e-5, 3e-2]
+    elif args.priors == "P2_4":
+        param[1] = [100]
+        trunc[1] = [1e-5, 5e-2]
+
+
     all_theta = []
     all_X = []
 
