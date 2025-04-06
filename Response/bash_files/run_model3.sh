@@ -2,11 +2,11 @@
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=02:00:00
-#SBATCH --account=standby
+#SBATCH --time=00:30:00
+#SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1-10            # Create a job array with indices from 1 to 10
+#SBATCH --array=1            # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -29,9 +29,9 @@ seed_START=1
 seeds=$((seed_START + SLURM_ARRAY_TASK_ID - 1))
 
 TASK="PBJD_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gaussian_linear_uniform, my_five_twomoons, g_and_k
-N_EPOCHS=200
+N_EPOCHS=1
 layer_len=512
-num_training=400000
+num_training=1500000
 tol=.05
 
 # Run the Python script with the specified N_EPOCHS value
