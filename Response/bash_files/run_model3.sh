@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=02:00:00
-#SBATCH --account=debug
+#SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --array=1-10            # Create a job array with indices from 1 to 10
