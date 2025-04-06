@@ -6,8 +6,8 @@ import subprocess
 from module import FL_Net2
 from sbi.utils import BoxUniform
 
-from NCoinJDP import NCoinJDP_train, ABC_rej
-from simulator import Simulators, PBJD_theta_exp_transform, PBJD_theta_log_transform, PBJD_truncated_priors2, learning_checking_save
+from NCoinJDP import NCoinJDP_train, ABC_rej, learning_checking_save
+from simulator import Simulators, PBJD_theta_exp_transform, PBJD_theta_log_transform, PBJD_truncated_priors2
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
