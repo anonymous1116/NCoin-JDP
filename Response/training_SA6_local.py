@@ -26,21 +26,23 @@ def main(args):
     x0=test_data[args.x0_ind]
     x0 = x0.type(torch.float32)
 
+    x0 = torch.reshape(x0, (1, x0.size(0)))
+    x0 = simulators.PBJD_summary(x0)
 
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]] 
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300] ]
-    
 
-    print(f"Prior and sample generating start", flush=True)
+    print(f"ABC_rej start", flush=True)
     
     all_theta = []
     all_X = []
 
-    batch_size = 100_000
+    batch_size = 200_000
     total_samples = args.num_training
-
+    tol = args.tol
+    
     for start in range(0, total_samples, batch_size):
         end = min(start + batch_size, total_samples)
         current_batch_size = end - start
@@ -50,19 +52,19 @@ def main(args):
 
         with torch.no_grad():
             X_batch = simulators(theta_batch)
-
-        all_theta.append(theta_batch.cpu())
-        all_X.append(X_batch.cpu())
+        X_new_batch, theta_new_batch = ABC_rej(x0, X_batch, theta_batch, tol = tol, device = device)
+        all_theta.append(theta_new_batch.cpu())
+        all_X.append(X_new_batch.cpu())
 
         del theta_batch, X_batch
         torch.cuda.empty_cache()
 
-    theta = torch.cat(all_theta, dim=0)
-    X = torch.cat(all_X, dim=0)
+    theta_new = torch.cat(all_theta, dim=0)
+    X_new = torch.cat(all_X, dim=0)
 
     print(f"Samples generated", flush=True)
     
-    D_in, D_out, Hs = X.size(1), theta.size(1), args.layer_len
+    D_in, D_out, Hs = X_new.size(1), theta_new.size(1), args.layer_len
 
     #cases = args.priors[:,2]
     output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/C{args.x0_ind}"
@@ -72,14 +74,6 @@ def main(args):
         print(f"Directory '{output_dir}' created.")
     else:
         print(f"Directory '{output_dir}' already exists.")
-
-    x0 = torch.reshape(x0, (1, x0.size(0)))
-    x0 = simulators.PBJD_summary(x0)
-
-    tol = args.tol
-    print(f"ABC_rej start", flush=True)
-    
-    X_new, theta_new = ABC_rej(x0, X, theta, tol = tol, device = device)
     
     theta_transform = PBJD_theta_log_transform(theta_new)
     a = torch.quantile(X_new, .001, 0)
