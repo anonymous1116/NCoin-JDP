@@ -2,11 +2,11 @@
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=00:30:00
-#SBATCH --account=debug
+#SBATCH --time=01:00:00
+#SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=0
+#SBATCH --array=0-49%25
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -29,9 +29,9 @@ prior_index=$((SLURM_ARRAY_TASK_ID / 10))
 priors_list=("P2_0" "P2_1" "P2_2" "P2_3" "P2_4")
 prior=${priors_list[$prior_index]}
 
-N_EPOCHS=2
+N_EPOCHS=200
 layer_len=512
-num_training=200000
+num_training=2000000
 tol=.1
 TASK="PBJD_summary"
 # Run the Python script with the specified N_EPOCHS value
