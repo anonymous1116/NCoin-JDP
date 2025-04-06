@@ -32,10 +32,11 @@ TASK="PBJD_summary"  # two_moons, MoG, Lapl, GL_U, slcp, gaussian_mixture, gauss
 N_EPOCHS=200
 layer_len=512
 num_training=400000
+tol=.05
 
 # Run the Python script with the specified N_EPOCHS value
 echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_SA6.py --experiment "SA6" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS
+python training_SA6_local.py --experiment "SA6_local" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --tol $tol
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
 

@@ -33,8 +33,7 @@ def main(args):
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300] ]
     
 
-    theta = PBJD_truncated_priors2(args.num_training, param, trunc)
-    print(f"Prior generated", flush=True)
+    print(f"Prior and sample generating start", flush=True)
     
     all_theta = []
     all_X = []
