@@ -33,6 +33,7 @@ N_EPOCHS=1
 layer_len=512
 num_training=200000
 tol=.1
+TASK="PBJD_summary"
 # Run the Python script with the specified N_EPOCHS value
 
 echo "Running with seed=$seed and prior=$prior"
