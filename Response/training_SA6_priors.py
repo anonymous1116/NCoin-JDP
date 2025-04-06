@@ -129,6 +129,8 @@ def get_args():
                         help = "Tolerance value")
     parser.add_argument("--x0_ind", type = int, default = 0,
                         help = "x0_ind")
+    parser.add_argument("--priors", type = str, default = "P1_0",
+                        help = "priors")
     return parser.parse_args()
 
 
