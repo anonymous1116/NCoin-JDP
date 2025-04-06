@@ -25,7 +25,6 @@ def main(args):
     x0= torch.load(test_save_name)
     simulators = Simulators("PBJD_summary", n = n, delta = delta)
     
-    
     L = args.num_training
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]] 
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300] ]

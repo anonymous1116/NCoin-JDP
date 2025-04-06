@@ -24,12 +24,10 @@ def main(args):
     
     test_save_name = 'Robustness/RDA_data.pt'
     test_data= torch.load(test_save_name)
-    x0=test_data[args.x0_ind]
-    x0 = x0.type(torch.float32)
-
+    x0= test_data[args.x0_ind]
+    
     x0 = torch.reshape(x0, (1, x0.size(0)))
-    x0 = simulators.PBJD_summary(x0)
-
+    
     
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]] 
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300] ]
