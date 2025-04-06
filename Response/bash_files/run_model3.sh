@@ -6,7 +6,7 @@
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=1-10            # Create a job array with indices from 1 to 10
+#SBATCH --array=10-99            # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -35,8 +35,21 @@ num_training=2000000
 tol=.1
 
 # Run the Python script with the specified N_EPOCHS value
-echo "Running with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
-python training_SA6_local.py --experiment "SA6_local" --seed $seeds --task $TASK --layer_len $layer_len --num_training $num_training --N_EPOCHS $N_EPOCHS --tol $tol
+# Calculate x0_ind and seed (x0 outer, seed inner)
+x0_ind=$((SLURM_ARRAY_TASK_ID / 10))
+seed=$((SLURM_ARRAY_TASK_ID % 10 + 1))
+
+echo "Running with seed=$seed, x0_ind=$x0_ind, task=$TASK"
+
+python training_SA6_local.py \
+  --experiment "SA6_local" \
+  --seed $seed \
+  --task $TASK \
+  --layer_len $layer_len \
+  --num_training $num_training \
+  --N_EPOCHS $N_EPOCHS \
+  --tol $tol \
+  --x0_ind $x0_ind
 
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
 
