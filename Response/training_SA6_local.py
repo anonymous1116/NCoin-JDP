@@ -16,7 +16,7 @@ device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 def main(args):
     # Set seeds
     torch.set_default_device("cpu")
-    torch.manual_seed(args.seed) 
+    torch.manual_seed(args.seed)
     np.random.seed(args.seed)
     n = 2014
     delta = 1
