@@ -82,6 +82,22 @@ def main(args):
         param[2] = [0.05, 4.0]
         trunc[2] = [0.05, 4.0]
 
+    if args.priors == "P4_0":
+        param[4] = [1/100]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_1":
+        param[4] = [1/150]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_2":
+        param[4] = [1/200]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_3":
+        param[4] = [1/100]
+        trunc[4] = [10, 350]
+    elif args.priors == "P4_4":
+        param[4] = [1/100]
+        trunc[4] = [10, 400]
+
 
     all_theta = []
     all_X = []
