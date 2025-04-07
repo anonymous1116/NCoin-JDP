@@ -26,7 +26,7 @@ cd $SLURM_SUBMIT_DIR
 # Calculate seed and prior
 seed=$((SLURM_ARRAY_TASK_ID % 10 + 1))
 prior_index=$((SLURM_ARRAY_TASK_ID / 10))
-priors_list=("P2_0" "P2_1" "P2_2" "P2_3" "P2_4")
+priors_list=("P3_0" "P3_1" "P3_2" "P3_3" "P3_4")
 prior=${priors_list[$prior_index]}
 
 N_EPOCHS=200
