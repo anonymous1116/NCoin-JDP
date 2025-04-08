@@ -161,7 +161,7 @@ def main(args):
     net_var.load_state_dict(tmp)
     net_var.eval()
     net_var.to("cpu")
-    torch.save(net, f"{output_dir}/cond_nets_{args.seed}.pt")
+    torch.save(net_var, f"{output_dir}/cond_nets_{args.seed}.pt")
     
 
 def batched_ABC_simulation(
