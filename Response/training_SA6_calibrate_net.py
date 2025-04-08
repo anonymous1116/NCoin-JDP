@@ -32,6 +32,72 @@ def main(args):
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]]
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300]]
 
+
+        # Initialize the Priors and Simulators classes
+    if args.priors == "P1_0":
+        param[0] = [-0.01, 0.02]
+        trunc[0] = [-0.01, 0.02]
+    elif args.priors == "P1_1":
+        param[0] = [-0.01, 0.025]
+        trunc[0] = [-0.01, 0.025]
+    elif args.priors == "P1_2":
+        param[0] = [-0.015, 0.025]
+        trunc[0] = [-0.015, 0.025]
+    elif args.priors == "P1_3":
+        param[0] = [-0.015, 0.03]
+        trunc[0] = [-0.015, 0.03]
+    elif args.priors == "P1_4":
+        param[0] = [-0.020, 0.03]
+        trunc[0] = [-0.020, 0.03]
+
+    if args.priors == "P2_0":
+        param[1] = [100]
+        trunc[1] = [1e-5, 1e-2]
+    elif args.priors == "P2_1":
+        param[1] = [75]
+        trunc[1] = [1e-5, 5e-2]
+    elif args.priors == "P2_2":
+        param[1] = [50]
+        trunc[1] = [1e-5, 1e-2]
+    elif args.priors == "P2_3":
+        param[1] = [100]
+        trunc[1] = [1e-5, 3e-2]
+    elif args.priors == "P2_4":
+        param[1] = [100]
+        trunc[1] = [1e-5, 5e-2]
+
+    if args.priors == "P3_0":
+        param[2] = [0.05, 2.0]
+        trunc[2] = [0.05, 2.0]
+    elif args.priors == "P3_1":
+        param[2] = [0.05, 2.5]
+        trunc[2] = [0.05, 2.5]
+    elif args.priors == "P3_2":
+        param[2] = [0.05, 3.0]
+        trunc[2] = [0.05, 3.0]
+    elif args.priors == "P3_3":
+        param[2] = [0.05, 3.5]
+        trunc[2] = [0.05, 3.5]
+    elif args.priors == "P3_4":
+        param[2] = [0.05, 4.0]
+        trunc[2] = [0.05, 4.0]
+
+    if args.priors == "P4_0":
+        param[4] = [1/100]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_1":
+        param[4] = [1/150]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_2":
+        param[4] = [1/200]
+        trunc[4] = [10, 300]
+    elif args.priors == "P4_3":
+        param[4] = [1/100]
+        trunc[4] = [10, 350]
+    elif args.priors == "P4_4":
+        param[4] = [1/100]
+        trunc[4] = [10, 400]
+
     print(f"ABC_rej start", flush=True)
     batch_size = 200_000
     total_samples = args.num_training
@@ -41,7 +107,7 @@ def main(args):
     
     D_in, D_out, Hs = X_new.size(1), theta_new.size(1), args.layer_len
     #cases = args.priors[:,2]
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/C{args.x0_ind}"
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}"
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -70,10 +136,10 @@ def main(args):
     torch.save(net, f"{output_dir}/mean_nets_{args.seed}.pt")
     torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
     learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_local_{args.seed}.pdf")
-    print(f"{args.experiment}, {args.task}, seed {args.seed}, x0_ind, {args.x0_ind} done", flush=True)
-
+    print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
+    
     del X_new, theta_new
-    torch.manual_seed(args.seed*2) 
+    torch.manual_seed(args.seed*2)
     np.random.seed(args.seed*2)
     torch.set_default_device("cpu")
        
@@ -174,6 +240,9 @@ def get_args():
                         help = "Tolerance value")
     parser.add_argument("--x0_ind", type = int, default = 0,
                         help = "x0_ind")
+    parser.add_argument("--priors", type = str, default = "P1_0",
+                        help = "priors")
+    
     return parser.parse_args()
 
 
@@ -187,3 +256,4 @@ if __name__ == "__main__":
     print(f"Number of simulations: {args.num_training}")
     print(f"Number of epochs: {args.N_EPOCHS}")
     print(f"seed: {args.seed}")
+    
