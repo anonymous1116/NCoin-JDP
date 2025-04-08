@@ -38,7 +38,7 @@ TASK="PBJD_summary"
 
 echo "Running with seed=$seed and prior=$prior"
 
-python training_SA6_calibrate.py \
+python training_SA6_calibrate_net.py \
   --experiment "SA6_calibrate" \
   --seed $seed \
   --task $TASK \
