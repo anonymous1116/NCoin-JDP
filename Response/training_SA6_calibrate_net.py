@@ -2,6 +2,7 @@ import torch
 import numpy as np
 import argparse
 import os
+import copy
 import subprocess
 from module import FL_Net2
 from sbi.utils import BoxUniform
@@ -133,7 +134,7 @@ def main(args):
     net.to("cpu")
 
     print(f"saving", flush=True)
-    torch.save(net, f"{output_dir}/mean_nets_{args.seed}.pt")
+    torch.save(tmp, f"{output_dir}/mean_nets_{args.seed}.pt")
     torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
     learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_local_{args.seed}.pdf")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
@@ -158,10 +159,7 @@ def main(args):
     net_var = FL_Net2(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
 
     tmp, _ = NCoinJDP_train(X_new, resid, net_var, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
-    net_var.load_state_dict(tmp)
-    net_var.eval()
-    net_var.to("cpu")
-    torch.save(net_var, f"{output_dir}/cond_nets_{args.seed}.pt")
+    torch.save(tmp, f"{output_dir}/cond_nets_{args.seed}.pt")
     
 
 def batched_ABC_simulation(
