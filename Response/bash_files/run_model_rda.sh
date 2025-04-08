@@ -26,7 +26,7 @@ cd $SLURM_SUBMIT_DIR
 # Calculate seed and prior
 seed=$((SLURM_ARRAY_TASK_ID % 10 + 1))
 prior_index=$((SLURM_ARRAY_TASK_ID / 10))
-priors_list=("P4_0" "P4_1" "P4_2" "P4_3" "P4_4")
+priors_list=("P1_0" "P1_1" "P1_2" "P1_3" "P1_4")
 prior=${priors_list[$prior_index]}
 
 N_EPOCHS=200
@@ -38,8 +38,8 @@ TASK="PBJD_summary"
 
 echo "Running with seed=$seed and prior=$prior"
 
-python training_SA6_priors.py \
-  --experiment "SA6_priors" \
+python training_SA6_calibrate.py \
+  --experiment "SA6_calibrate" \
   --seed $seed \
   --task $TASK \
   --layer_len $layer_len \
