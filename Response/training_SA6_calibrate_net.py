@@ -70,7 +70,7 @@ def main(args):
     torch.save(net, f"{output_dir}/mean_nets_{args.seed}.pt")
     torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
     learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_local_{args.seed}.pdf")
-    print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
+    print(f"{args.experiment}, {args.task}, seed {args.seed}, x0_ind, {args.x0_ind} done", flush=True)
 
     del X_new, theta_new
     torch.manual_seed(args.seed*2) 
