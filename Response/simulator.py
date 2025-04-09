@@ -204,6 +204,7 @@ class Simulators:
         # Concatenate all batches
         return torch.cat(all_paths, dim=0)
     
+
     def PBJD_simulate_batch(self, theta):
         """
         This function generates a one sample path between an interval for 
