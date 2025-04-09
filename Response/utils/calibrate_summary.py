@@ -68,7 +68,10 @@ def main(args):
         theta_samples = torch.cat(theta_samples, dim =0)
         theta_samples = PBJD_theta_exp_transform(theta_samples)
 
-        q_results = quantile_print(theta_samples)
+        q_results_95 = quantile_print(theta_samples, alpha = .05)
+        q_results_90 = quantile_print(theta_samples, alpha = .10)
+        q_results_85 = quantile_print(theta_samples, alpha = .15)
+
         mad_results = compute_mad(theta_samples)
 
         if not os.path.exists(f"{output_dir}/x0_{j}"):
@@ -78,7 +81,10 @@ def main(args):
             print(f"Directory '{output_dir}/x0_{j}' already exists.")
         
 
-        torch.save(q_results, f"{output_dir}/x0_{j}/q_results_x0_{j}_{seed}")
+        torch.save(q_results_95, f"{output_dir}/x0_{j}/q_results_95_x0_{j}_{seed}")
+        torch.save(q_results_90, f"{output_dir}/x0_{j}/q_results_90_x0_{j}_{seed}")
+        torch.save(q_results_85, f"{output_dir}/x0_{j}/q_results_85_x0_{j}_{seed}")
+        
         torch.save(mad_results, f"{output_dir}/x0_{j}/mad_results_x0_{j}_{seed}")
         
         del net, net_var, X_new_x0, theta_transform_new_x0, theta_samples, x0_new
