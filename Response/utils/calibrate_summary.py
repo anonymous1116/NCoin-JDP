@@ -29,7 +29,7 @@ def main(args):
     X_new = []
     theta_new = []
     prior = "P1_0"
-    for j in range(1, 2):
+    for k in range(1, 2):
         data_dir = f"/scratch/gilbreth/hyun18/PBJD/{prior}/{prior}_{j}"
         [X_cal_tmp, theta_cal_tmp] = torch.load(data_dir)
         X_new_tmp, theta_new_tmp = ABC_rej(x0, X_cal_tmp, theta_cal_tmp, tol = .1, device =device)
