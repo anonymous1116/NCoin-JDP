@@ -187,28 +187,6 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Select points within tolerance and return to CPU if needed
     return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
 
-def ABC_rej(x0, X_cal, Y_cal, tol, device):
-    # Move all tensors to the target device at once
-    x0 = x0.to(device)
-    X_cal = X_cal.to(device)
-    Y_cal = Y_cal.to(device)
-    
-    # Calculate the squared Euclidean distance
-    mad = compute_mad(X_cal)
-    mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
-    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/(mad+1e-8) **2, 1))
-
-    # Determine threshold distance using top-k rather than sorting the entire tensor
-    num = X_cal.size(0)
-    nacc = int(num * tol)
-    ds = torch.topk(dist, nacc, largest=False).values[-1]
-    
-    # Create mask and filter based on the threshold distance
-    wt1 = (dist <= ds)
-    
-    # Select points within tolerance and return to CPU if needed
-    return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
-
 
 def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", chunk_size = 10_000):
     mad = compute_mad(X_cal)
@@ -489,3 +467,135 @@ def RMSE(results, true):
     for i in range(p):
         tmp += torch.sum(torch.square(results[:,i] - true[i] ))/sim
     return torch.sqrt(tmp).detach().cpu().numpy().tolist()
+
+
+def quantile_print(data, alpha = 0.05):
+    if data.ndim == 1:
+        return np.round(hpd_region_1d(data, alpha = alpha),4)
+    else:
+        tmp = []
+        for j in range(data.size(1)):
+            tmp.append(np.round(hpd_region_1d(data[:,j], alpha = alpha),4))
+        return tmp
+def hpd_region_1d(samples, alpha=0.05):
+    """
+    Compute the Highest Posterior Density (HPD) interval from 1D samples.
+
+    Args:
+        samples (Tensor): 1D tensor of posterior samples
+        alpha (float): desired tail probability (e.g., 0.05 for 95% HPD)
+
+    Returns:
+        (float, float): lower and upper bounds of HPD region
+    """
+    samples = samples.flatten()
+    N = samples.shape[0]
+    sorted_samples = torch.sort(samples)[0]
+    cred_mass = 1.0 - alpha
+
+    # Fixed line here:
+    interval_idx_inc = int((cred_mass * N) // 1)
+
+    # All possible intervals of size interval_idx_inc
+    n_intervals = N - interval_idx_inc
+    widths = sorted_samples[interval_idx_inc:] - sorted_samples[:n_intervals]
+
+    # Find the shortest interval
+    min_idx = torch.argmin(widths)
+    hpd_min = sorted_samples[min_idx]
+    hpd_max = sorted_samples[min_idx + interval_idx_inc]
+
+    return hpd_min.item(), hpd_max.item()
+
+
+def calibrate_PBJD(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", chunk_size = 10_000):
+    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2, 1))
+
+    X_cal, x0, dist = X_cal.cpu(), x0.cpu(), dist.cpu()
+    net, net_var = net.to("cpu"), net_var.to("cpu")
+    
+    sort_dist, _ = torch.sort(dist)
+    
+    num = X_cal.size(0)
+    #dim_output = y_cal.size(1)
+
+    # new index
+    nacc = int(num * tol)
+    ds = sort_dist[nacc-1]
+    wt1 = (dist <= ds)
+
+    # weights
+    h = 1/ torch.log(torch.sum(wt1)) #** (1/dim_output)
+    weights = torch.exp(-dist[wt1]/ds/h)
+    
+    # thetahat
+    with torch.no_grad():
+        net.eval()
+        thetahat = net(x0)
+        if bounds is not None:
+            thetahat = torch.clamp(thetahat, torch.tensor(bounds)[:,0] ,torch.tensor(bounds)[:,1])
+
+    # Get samples
+    net_cond = net_var.to(device)
+    net = net.to(device)
+    y_cal = torch.clone(y_cal[wt1,:])
+    X_cal = torch.clone(X_cal[wt1,:])
+    
+    chunk_size = chunk_size  # Adjust this based on your GPU memory
+    num_chunks = X_cal.size(0) // chunk_size
+
+    resid_tmp = []
+    sd_X = []
+
+    with torch.no_grad():
+        for i in range(num_chunks + 1):
+            net.eval()
+            net_cond.eval()
+            start = i * chunk_size
+            end = (i + 1) * chunk_size if (i + 1) * chunk_size < X_cal.size(0) else X_cal.size(0)
+            
+            X_chunk = X_cal[start:end].to(device)
+            y_chunk = y_cal[start:end].to(device)
+            y_chunk_predict = net(X_chunk)
+            if bounds is not None:
+                bounds_tensor = torch.tensor(bounds).to(device)
+                y_chunk_predict = torch.clamp(y_chunk_predict, bounds_tensor[:,0] ,bounds_tensor[:,1]) 
+            resid_chunk = y_chunk - y_chunk_predict
+            sd_X_chunk = torch.exp(net_cond(X_chunk))
+            
+            resid_tmp.append(resid_chunk.cpu())  # Move back to CPU to free GPU memory
+            sd_X.append(sd_X_chunk.cpu())
+    
+        sd_x0 = torch.exp(net_cond(x0.to(device))).cpu()
+    
+    del X_chunk, y_chunk, resid_chunk, sd_X_chunk
+    # Clear cached memory
+    torch.cuda.empty_cache()
+    
+    # Concatenate chunks
+    resid_tmp = torch.cat(resid_tmp, dim=0)
+    sd_X = torch.cat(sd_X, dim=0)
+    adj = thetahat + resid_tmp * sd_x0 / sd_X
+    
+    weights_tmp = np.copy(weights.detach().cpu().numpy())
+    P = weights_tmp / weights_tmp.sum()
+
+    vec = adj.numpy()
+    sam_ind = np.random.choice(np.arange(0, adj.size(0)), adj.size(0), replace = True, p = P)
+    sample_post_large = torch.tensor(vec[sam_ind,:])
+    del P, sam_ind
+    
+    if bounds is not None:
+        assert len(bounds) == y_cal.size(1), "The dimension of bounds is not equal to the number of parameter space"
+        wt2 = []
+        for j in range(len(bounds)):
+            tmp = ((sample_post_large[:,j] < bounds[j][1]) & (sample_post_large[:,j] > bounds[j][0]))
+            wt2.append(tmp)
+        wt2 = torch.stack(wt2, 1)
+        wt2 = torch.all(wt2, 1)
+        sample_post_large = torch.clone(sample_post_large[wt2,:])
+        del wt2
+
+    sam_ind_post = np.random.choice(np.arange(0, sample_post_large.size()[0]), n_samples, replace = True)
+    sample_post = sample_post_large[sam_ind_post,:]
+    return sample_post, sample_post_large
