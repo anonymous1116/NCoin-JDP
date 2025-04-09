@@ -82,7 +82,7 @@ def main(args):
         torch.save(mad_results, f"{output_dir}/x0_{j}/mad_results_x0_{j}_{seed}")
         
         del net, net_var, X_new_x0, theta_transform_new_x0, theta_samples, x0_new
-
+    
 
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")

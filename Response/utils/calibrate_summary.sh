@@ -31,8 +31,10 @@ prior=${priors_list[$prior_index]}
 
 # Run the Python script with the specified N_EPOCHS value
 
-echo "Running with seed=$seed and prior=$prior"
+echo "Running with seed=$x0_ind and prior=$prior"
 
 python utils/calibrate_summary.py \
   --x0_ind $x0_ind \
   --priors "$prior"
+
+echo "Running finished with seed=$x0_ind and prior=$prior"
