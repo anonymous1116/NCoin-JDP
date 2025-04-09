@@ -3,7 +3,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --time=00:30:00
-#SBATCH --account=standby
+#SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
 #SBATCH --array=1
