@@ -101,7 +101,7 @@ def main(args):
     theta_cal = PBJD_truncated_priors2(num_calibrations, param, trunc).to(device)
     X_cal = simulators(theta_cal)
 
-    output_dir = f"../../../scratch/gilbreth/hyun18/PBJD/{args.priors}"
+    output_dir = f"/scratch/gilbreth/hyun18/PBJD/{args.priors}"
 
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)

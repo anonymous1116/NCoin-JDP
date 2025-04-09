@@ -50,7 +50,7 @@ python training_SA6_calibrate_net.py \
   --N_EPOCHS $N_EPOCHS \
   --tol $tol \
   --x0_ind $x0_ind
-
+  
 echo "## Run completed with seed=$seeds, task = $TASK, N_EPCOHS = $N_EPOCHS, layer_len: $layer_len, num_training: $num_training"
 
 
