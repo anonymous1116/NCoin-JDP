@@ -4,8 +4,6 @@ import argparse
 import os
 import copy
 import subprocess
-from module import FL_Net2
-from sbi.utils import BoxUniform
 sys.path.append(os.path.dirname(os.path.abspath(__file__)) + '/../')
 
 from NCoinJDP import NCoinJDP_train, ABC_rej, learning_checking_save
