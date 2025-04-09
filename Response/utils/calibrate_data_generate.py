@@ -95,7 +95,7 @@ def main(args):
         param[4] = [1/100]
         trunc[4] = [10, 400]
 
-    num_calibrations = 5_000
+    num_calibrations = 500_000
 
     # Run the simulator
     theta_cal = PBJD_truncated_priors2(num_calibrations, param, trunc).to(device)
