@@ -275,7 +275,7 @@ def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, boun
         wt2 = torch.stack(wt2, 1)
         wt2 = torch.all(wt2, 1)
         sample_post_large = torch.clone(sample_post_large[wt2,:])
-    del wt2
+        del wt2
 
     sam_ind_post = np.random.choice(np.arange(0, sample_post_large.size()[0]), n_samples, replace = True)
     sample_post = sample_post_large[sam_ind_post,:]
