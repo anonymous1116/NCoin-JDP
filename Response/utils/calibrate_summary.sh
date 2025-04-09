@@ -2,13 +2,13 @@
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=00:10:00
+#SBATCH --time=01:55:00
 #SBATCH --account=debug
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=0
+#SBATCH --array=0-49%25
 #SBATCH --output=output_log/output_log_%A_%a.out
-#SBATCH --error=error_log/error_log_%A_%a.txt
+#SBATCH --error=error._log/error_log_%A_%a.txt
 
 # Create the output_log directory if it doesn't exist
 mkdir -p output_log

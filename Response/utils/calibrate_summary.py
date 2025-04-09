@@ -29,7 +29,7 @@ def main(args):
     X_new = []
     theta_new = []
     prior = "P1_0"
-    for k in range(1, 2):
+    for k in range(1, 101):
         data_dir = f"/scratch/gilbreth/hyun18/PBJD/{prior}/{prior}_{k}"
         [X_cal_tmp, theta_cal_tmp] = torch.load(data_dir)
         X_new_tmp, theta_new_tmp = ABC_rej(x0, X_cal_tmp, theta_cal_tmp, tol = .1, device =device)
@@ -43,7 +43,7 @@ def main(args):
     D_in, D_out, Hs = X_new.size(1), theta_new.size(1), 512
     tol = np.arange(0.1, 1.1 ,0.1)
 
-    for seed in range(1, 2, 1):
+    for seed in range(1, 11, 1):
         output_dir = f"../../depot_hyun/hyun/NCoinJDP/SA6_calibrate/PBJD_summary/J_2000/{prior}"
         net_tmp = torch.load(f"{output_dir}/mean_nets_{seed}.pt")
         _, a, b=  torch.load(f"{output_dir}/local_{seed}.pt")
