@@ -15,7 +15,7 @@ def main(args):
     device = torch.device("cuda:0")
 
     # x0_read
-    test_save_name = '../Robustness/RDA_data.pt'
+    test_save_name = 'Robustness/RDA_data.pt'
     test_data= torch.load(test_save_name)
     x0s = test_data.type(torch.float32)
 
@@ -44,7 +44,7 @@ def main(args):
     tol = np.arange(0.1, 1.1 ,0.1)
 
     for seed in range(1, 2, 1):
-        output_dir = f"../../../depot_hyun/hyun/NCoinJDP/SA6_calibrate/PBJD_summary/J_2000/{prior}"
+        output_dir = f"../../depot_hyun/hyun/NCoinJDP/SA6_calibrate/PBJD_summary/J_2000/{prior}"
         net_tmp = torch.load(f"{output_dir}/mean_nets_{seed}.pt")
         _, a, b=  torch.load(f"{output_dir}/local_{seed}.pt")
         net_tmp2 = torch.load(f"{output_dir}/cond_nets_{seed}.pt")
