@@ -123,7 +123,7 @@ def main(args):
     b = torch.reshape(b, (1, b.size()[0]))
 
     X_new = torch.clone((X_new - a) / (b - a))
-    x0 = torch.clone((x0 - a) / (b - a))
+    x0_new = torch.clone((x0 - a) / (b - a))
 
     print(f"training start", flush=True)
     net = FL_Net2(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
@@ -135,7 +135,7 @@ def main(args):
 
     print(f"saving", flush=True)
     torch.save(tmp, f"{output_dir}/mean_nets_{args.seed}.pt")
-    torch.save([net(x0).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
+    torch.save([net(x0_new).detach(),a,b], f"{output_dir}/local_{args.seed}.pt")
     learning_checking_save(X_new, theta_transform, net, name = f"{output_dir}/LC_local_{args.seed}.pdf")
     print(f"{args.experiment}, {args.task}, seed {args.seed}, priors {args.priors}, x0_ind, {args.x0_ind} done", flush=True)
     

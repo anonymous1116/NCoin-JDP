@@ -187,6 +187,29 @@ def ABC_rej(x0, X_cal, Y_cal, tol, device):
     # Select points within tolerance and return to CPU if needed
     return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
 
+def ABC_rej(x0, X_cal, Y_cal, tol, device):
+    # Move all tensors to the target device at once
+    x0 = x0.to(device)
+    X_cal = X_cal.to(device)
+    Y_cal = Y_cal.to(device)
+    
+    # Calculate the squared Euclidean distance
+    mad = compute_mad(X_cal)
+    mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
+    dist = torch.sqrt(torch.mean(torch.abs(X_cal.to(device) - x0.to(device))**2/(mad+1e-8) **2, 1))
+
+    # Determine threshold distance using top-k rather than sorting the entire tensor
+    num = X_cal.size(0)
+    nacc = int(num * tol)
+    ds = torch.topk(dist, nacc, largest=False).values[-1]
+    
+    # Create mask and filter based on the threshold distance
+    wt1 = (dist <= ds)
+    
+    # Select points within tolerance and return to CPU if needed
+    return X_cal[wt1].cpu(), Y_cal[wt1].cpu()
+
+
 def calibrate(x0, X_cal, y_cal, net, net_var, n_samples= 100000, tol = .01, bounds = None, device = "cpu", chunk_size = 10_000):
     mad = compute_mad(X_cal)
     mad = torch.reshape(mad, (1, X_cal.size(1))).to(device)
