@@ -31,7 +31,7 @@ def main(args):
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300]]
 
 
-        # Initialize the Priors and Simulators classes
+    # Initialize the Priors and Simulators classes
     if args.priors == "P1_0":
         param[0] = [-0.01, 0.02]
         trunc[0] = [-0.01, 0.02]
@@ -96,7 +96,7 @@ def main(args):
         param[4] = [1/100]
         trunc[4] = [10, 400]
 
-    num_calibrations = 500_000
+    num_calibrations = 5_000
 
     # Run the simulator
     theta_cal = PBJD_truncated_priors2(num_calibrations, param, trunc).to(device)
