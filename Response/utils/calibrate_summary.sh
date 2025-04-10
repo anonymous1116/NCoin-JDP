@@ -6,7 +6,7 @@
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=0-19
+#SBATCH --array=0-3
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error._log/error_log_%A_%a.txt
 
