@@ -24,7 +24,6 @@ def main(args):
     x0 = torch.tensor(np.array(x0),dtype = torch.float32)
     x0 = torch.reshape(x0, (1, x0.size(0)))
 
-
     # Calibration data read
     X_new = []
     theta_new = []
