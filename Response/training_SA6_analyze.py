@@ -2,18 +2,17 @@ import torch
 import numpy as np
 import argparse
 import os
-import copy
 import subprocess
 from module import FL_Net2
 from sbi.utils import BoxUniform
 
 from NCoinJDP import NCoinJDP_train, ABC_rej, learning_checking_save
 from simulator import Simulators, PBJD_theta_exp_transform, PBJD_theta_log_transform, PBJD_truncated_priors2
+from training_SA6_calibrate_net import batched_ABC_simulation
 #from utils.batch_process import resid_chunk_process
 
 # Set the default device based on availability
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
 
 def main(args):
     # Set seeds
@@ -33,72 +32,6 @@ def main(args):
     param = [[-0.01, 0.02], [100], [0.05, 2], [0.05,2], [1/100], [1/100]]
     trunc = [[-0.01, 0.02], [1e-5, 1e-2], [0.05, 2], [0.05, 2], [10, 300], [10, 300]]
 
-
-        # Initialize the Priors and Simulators classes
-    if args.priors == "P1_0":
-        param[0] = [-0.01, 0.02]
-        trunc[0] = [-0.01, 0.02]
-    elif args.priors == "P1_1":
-        param[0] = [-0.01, 0.025]
-        trunc[0] = [-0.01, 0.025]
-    elif args.priors == "P1_2":
-        param[0] = [-0.015, 0.025]
-        trunc[0] = [-0.015, 0.025]
-    elif args.priors == "P1_3":
-        param[0] = [-0.015, 0.03]
-        trunc[0] = [-0.015, 0.03]
-    elif args.priors == "P1_4":
-        param[0] = [-0.020, 0.03]
-        trunc[0] = [-0.020, 0.03]
-
-    if args.priors == "P2_0":
-        param[1] = [100]
-        trunc[1] = [1e-5, 1e-2]
-    elif args.priors == "P2_1":
-        param[1] = [75]
-        trunc[1] = [1e-5, 5e-2]
-    elif args.priors == "P2_2":
-        param[1] = [50]
-        trunc[1] = [1e-5, 1e-2]
-    elif args.priors == "P2_3":
-        param[1] = [100]
-        trunc[1] = [1e-5, 3e-2]
-    elif args.priors == "P2_4":
-        param[1] = [100]
-        trunc[1] = [1e-5, 5e-2]
-
-    if args.priors == "P3_0":
-        param[2] = [0.05, 2.0]
-        trunc[2] = [0.05, 2.0]
-    elif args.priors == "P3_1":
-        param[2] = [0.05, 2.5]
-        trunc[2] = [0.05, 2.5]
-    elif args.priors == "P3_2":
-        param[2] = [0.05, 3.0]
-        trunc[2] = [0.05, 3.0]
-    elif args.priors == "P3_3":
-        param[2] = [0.05, 3.5]
-        trunc[2] = [0.05, 3.5]
-    elif args.priors == "P3_4":
-        param[2] = [0.05, 4.0]
-        trunc[2] = [0.05, 4.0]
-
-    if args.priors == "P4_0":
-        param[4] = [1/100]
-        trunc[4] = [10, 300]
-    elif args.priors == "P4_1":
-        param[4] = [1/150]
-        trunc[4] = [10, 300]
-    elif args.priors == "P4_2":
-        param[4] = [1/200]
-        trunc[4] = [10, 300]
-    elif args.priors == "P4_3":
-        param[4] = [1/100]
-        trunc[4] = [10, 350]
-    elif args.priors == "P4_4":
-        param[4] = [1/100]
-        trunc[4] = [10, 400]
-
     print(f"ABC_rej start", flush=True)
     batch_size = 200_000
     total_samples = args.num_training
@@ -107,9 +40,9 @@ def main(args):
     print(f"Samples generated", flush=True)
     
     D_in, D_out, Hs = X_new.size(1), theta_new.size(1), args.layer_len
+
     #cases = args.priors[:,2]
-    #output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.priors}"
-    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/{args.x0_ind}"
+    output_dir = f"../../depot_hyun/hyun/NCoinJDP/{args.experiment}/{args.task}/J_{int(args.num_training/1000)}/C{args.x0_ind}"
     
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
@@ -125,7 +58,7 @@ def main(args):
 
     X_new = torch.clone((X_new - a) / (b - a))
     x0_new = torch.clone((x0 - a) / (b - a))
-
+    
     print(f"training start", flush=True)
     net = FL_Net2(D_in, D_out, H=Hs, H2=Hs, H3=Hs).to(device)
     val_batch = 10000
@@ -146,7 +79,6 @@ def main(args):
     torch.set_default_device("cpu")
        
     X_new, theta_new = batched_ABC_simulation(total_samples, batch_size, param, trunc, x0, simulators, tol, device)
-    
     X_new = torch.clone((X_new - a) / (b - a))
     theta_transform = PBJD_theta_log_transform(theta_new)
     
@@ -162,65 +94,7 @@ def main(args):
     tmp, _ = NCoinJDP_train(X_new, resid, net_var, device=device, N_EPOCHS=args.N_EPOCHS, val_batch = val_batch)
     torch.save(tmp, f"{output_dir}/cond_nets_{args.seed}.pt")
     
-
-def batched_ABC_simulation(
-    total_samples,
-    batch_size,
-    param,
-    trunc,
-    x0,
-    simulators,
-    tol=0.05,
-    device="cuda"
-):
-    """
-    Perform ABC rejection in batches to avoid memory issues.
-
-    Args:
-        total_samples (int): Total number of simulations to generate.
-        batch_size (int): Number of samples per batch.
-        param (list): Prior parameter settings for PBJD_truncated_priors2.
-        trunc (list): Truncation bounds for the prior.
-        x0 (Tensor): Observation to compare against.
-        simulators (callable): Simulator function.
-        ABC_rej (callable): ABC rejection function.
-        tol (float): ABC tolerance.
-        device (str): 'cuda' or 'cpu'.
-
-    Returns:
-        Tuple[Tensor, Tensor]: accepted_theta (N, D), accepted_X (N, ...).
-    """
-    all_theta = []
-    all_X = []
-
-    for start in range(0, total_samples, batch_size):
-        end = min(start + batch_size, total_samples)
-        current_batch_size = end - start
-
-        # Sample from prior
-        theta_batch = PBJD_truncated_priors2(current_batch_size, param, trunc).to(device)
-
-        with torch.no_grad():
-            X_batch = simulators(theta_batch)
-
-        # Run ABC rejection
-        X_new_batch, theta_new_batch = ABC_rej(x0, X_batch, theta_batch, tol=tol, device=device)
-
-        # Store accepted samples
-        all_theta.append(theta_new_batch.cpu())
-        all_X.append(X_new_batch.cpu())
-
-        del theta_batch, X_batch, X_new_batch, theta_new_batch
-        torch.cuda.empty_cache()
-
-    # Concatenate all accepted samples
-    accepted_theta = torch.cat(all_theta, dim=0)
-    accepted_X = torch.cat(all_X, dim=0)
-
-    return accepted_X, accepted_theta
-
-
-
+    
 def get_args():
     parser = argparse.ArgumentParser(description="Run simulation with customizable parameters.")
     parser.add_argument('--experiment', type=str, default='SA1', 
@@ -239,9 +113,6 @@ def get_args():
                         help = "Tolerance value")
     parser.add_argument("--x0_ind", type = int, default = 0,
                         help = "x0_ind")
-    parser.add_argument("--priors", type = str, default = "P1_0",
-                        help = "priors")
-    
     return parser.parse_args()
 
 
@@ -255,4 +126,3 @@ if __name__ == "__main__":
     print(f"Number of simulations: {args.num_training}")
     print(f"Number of epochs: {args.N_EPOCHS}")
     print(f"seed: {args.seed}")
-    

@@ -6,7 +6,7 @@
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
-#SBATCH --array=0-9            # Create a job array with indices from 1 to 10
+#SBATCH --array=0-99%25            # Create a job array with indices from 1 to 10
 #SBATCH --output=output_log/output_log_%A_%a.out
 #SBATCH --error=error_log/error_log_%A_%a.txt
 
@@ -41,8 +41,8 @@ seed=$((SLURM_ARRAY_TASK_ID % 10 + 1))
 
 echo "Running with seed=$seed, x0_ind=$x0_ind, task=$TASK"
 
-python training_SA6_calibrate_net.py \
-  --experiment "SA6_calibrate" \
+python training_SA6_analyze.py \
+  --experiment "SA6_analyze" \
   --seed $seed \
   --task $TASK \
   --layer_len $layer_len \
