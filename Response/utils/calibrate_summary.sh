@@ -27,7 +27,7 @@ x0_ind=$SLURM_ARRAY_TASK_ID
 
 echo "Running with prior=$prior and x0_ind=$x0_ind"
 
-python utils/calibrate_summary.py \
+python utils/calibrate_summary_analyze.py \
   --priors "$prior" \
   --x0_ind "$x0_ind"
 
