@@ -2,7 +2,7 @@
 
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --time=01:28:00
+#SBATCH --time=01:58:00
 #SBATCH --account=standby
 #SBATCH --gpus-per-node=1
 #SBATCH --nodes=1
