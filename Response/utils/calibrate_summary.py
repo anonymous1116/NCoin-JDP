@@ -77,14 +77,14 @@ def main(args):
             print(f"Directory '{output_dir}/x0_{j}' created.")
         else:
             print(f"Directory '{output_dir}/x0_{j}' already exists.")
-        
 
+        
         torch.save(q_results_95, f"{output_dir}/x0_{j}/q_results_95_x0_{j}_{seed}")
         torch.save(q_results_90, f"{output_dir}/x0_{j}/q_results_90_x0_{j}_{seed}")
         torch.save(q_results_85, f"{output_dir}/x0_{j}/q_results_85_x0_{j}_{seed}")
         
         torch.save(mad_results, f"{output_dir}/x0_{j}/mad_results_x0_{j}_{seed}")
-        
+        torch.save(theta_samples, f"")
         del net, net_var, X_new_x0, theta_transform_new_x0, theta_samples, x0_new
 
 

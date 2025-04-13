@@ -77,14 +77,22 @@ def main(args):
             print(f"Directory '{output_dir}' created.")
         else:
             print(f"Directory '{output_dir}' already exists.")
-        
 
+        output_dir2 = f"/scratch/gilbreth/hyun18/PBJD/RDA_analyze/C{j}"
+        if not os.path.exists(f"{output_dir2}"):
+            os.makedirs(f"{output_dir2}")
+            print(f"Directory '{output_dir2}' created.")
+        else:
+            print(f"Directory '{output_dir2}' already exists.")
+        
+        # save summary
         torch.save(q_results_95, f"{output_dir}/q_results_95_{seed}")
         torch.save(q_results_90, f"{output_dir}/q_results_90_{seed}")
         torch.save(q_results_85, f"{output_dir}/q_results_85_{seed}")
-        
         torch.save(mad_results, f"{output_dir}/mad_results_{seed}")
         
+        # save samples
+        torch.save(theta_samples, f"{output_dir2}/uncertainty_{seed}.pt")
         del net, net_var, X_new_x0, theta_transform_new_x0, theta_samples, x0_new
 
 
